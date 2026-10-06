@@ -8,7 +8,7 @@ and fused by a gate; two heads produce a class distribution and a continuous gra
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/nitsci_method.png}
+\includegraphics[width=\linewidth]{figures/nitsci_method.pdf}
 \caption{Overview of the proposed method. \textbf{(A)} Data preparation and two-stage transfer learning: APTOS-2019
 and IDRiD images are pre-processed identically; the full model is pretrained on APTOS-2019 (stage 1) and fine-tuned
 on five stratified IDRiD folds (stage 2), while a stratified 15\% IDRiD test set is locked away; out-of-fold
@@ -16,7 +16,8 @@ predictions fix the decision rule, the grade thresholds $\theta_1,\dots,\theta_4
 \textbf{(B)} NITSCI architecture: EfficientNetV2-S features are projected to $N=196$ tokens, processed by a global
 expert and by a lesion expert $L=T\odot m$ built from a learned lesion map $m$, coupled by bidirectional
 cross-attention, pooled and fused by an adaptive gate $g$; classification and regression heads are combined into the
-grade score $s$. Purple: global pathway; orange: lesion pathway; green: outputs.}
+grade score $s$, whose thresholds come from panel A. Fundus photographs, feature maps and the probability
+values shown are synthetic illustrations, not patient data or model outputs.}
 \label{fig:arch}
 \end{figure}
 

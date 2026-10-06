@@ -5,7 +5,7 @@
 | `nitsci_paper.tex` / `.pdf` | Full manuscript (title, abstract, declarations; inputs the section files) |
 | `sections/01_introduction.tex` … `08_conclusion.tex` | One file per section, each about 2 pages (Method and Results about 2.5–3, because of the architecture diagram and the results tables) |
 | `sections/09_supplementary.tex` | Supplementary figures (grade histograms, training curves) |
-| `figures/nitsci_method.excalidraw` (+ `.png`, `.svg`) | Method overview figure (Fig. 2). Open the `.excalidraw` file at excalidraw.com to edit it; `figures/excalidraw_src/` holds the scripts that generated and rendered it |
+| `figures/nitsci_method.pdf` (+ `.png`) | Method overview figure (Fig. 2), HEL-Net style. Rebuild with `python figures/method_figure/make_method_figure.py`; add `--fundus img1.jpg img2.jpg ...` to use real IDRiD/APTOS photographs instead of the synthetic ones |
 | `section_pdfs/` | A separate PDF for each section, cut from the full paper |
 | `make_section_pdfs.sh` | Rebuilds the paper and the per-section PDFs |
 | `refs.bib` | 80 references (all cited), each a real publication with DOI/venue |
