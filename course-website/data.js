@@ -1,0 +1,111 @@
+// Course content, transcribed from the "Neurons to Mixture of Experts" handbook
+// (Part E, pages 28-31 and Table 1). Edit here to update the site.
+
+window.COURSE = {
+  modules: [
+    { id: 1, days: '1–6', title: 'Foundations & ANN', color: '#c9a227',
+      summary: 'Tensors, autograd, backpropagation by hand, the multi-layer perceptron, regularisation and optimisers.' },
+    { id: 2, days: '7–12', title: 'CNN & Computer Vision', color: '#4a7fd4',
+      summary: 'Convolution maths, transfer learning, detection and segmentation, explainability and edge deployment.' },
+    { id: 3, days: '13–18', title: 'RNN, LSTM & Time Series', color: '#2e9e83',
+      summary: 'Recurrence and BPTT, vanishing gradients, LSTM gates, forecasting without leakage, seq2seq with attention.' },
+    { id: 4, days: '19–24', title: 'Transformers, LLMs & MoE', color: '#8a5cd0',
+      summary: 'Self-attention from equations, pre-trained Transformers, multimodal models, RAG, LoRA/QLoRA, Mixture of Experts.' },
+    { id: 5, days: '25–30', title: 'MLOps & SDG Capstone', color: '#e0773a',
+      summary: 'Real-time MLOps stack, responsible AI, and an end-to-end UN SDG capstone from kick-off to demo day.' },
+  ],
+
+  // Table 22: day, module, topic, hands-on lab / outcome, handbook reference
+  days: [
+    [1, 1, 'Environment setup, tensors, autograd, GPU vs CPU', 'Install the Table 7 stack; first tensors and gradients in PyTorch', 'Table 7, setup listing'],
+    [2, 1, 'Neuron, activations, loss functions, backpropagation', 'Compute one neuron and one backprop step by hand, then check in code', 'Tables 2–3'],
+    [3, 1, 'Multi-layer perceptron end to end', 'Build and train ann_mlp.py; read input → output demo', 'Listing B.1, Table 10'],
+    [4, 1, 'Regularisation, optimisers, the proper way', 'Dropout, weight decay, AdamW, schedulers; apply 14-point checklist', 'Table 9'],
+    [5, 1, 'ANN project lab', 'Credit-card fraud or diabetes risk with PR-AUC and SHAP', 'Table 12'],
+    [6, 1, 'Module 1 assessment', 'Quiz + mini-project demo and code review', '–'],
+    [7, 2, 'Convolution mathematics', 'Output-size, parameter and MAC calculations; receptive field', 'Tables 1–4, Fig. 1b'],
+    [8, 2, 'Building a CNN', 'Train cnn.py on MNIST; inspect feature maps', 'Listing B.2'],
+    [9, 2, 'Transfer learning', 'Fine-tune ResNet / EfficientNet (timm) on a medical or agri dataset', 'Table 13'],
+    [10, 2, 'Detection and segmentation', 'YOLOv8 object detection and U-Net segmentation', 'Table 13'],
+    [11, 2, 'Explainability and edge deployment', 'Grad-CAM; export to ONNX / TFLite; measure FPS', 'Table 8'],
+    [12, 2, 'CNN project lab', 'Diabetic-retinopathy grading or leaf-disease mobile app', 'Table 13'],
+    [13, 3, 'Recurrent networks and BPTT', 'Vanishing-gradient experiment (0.9⁵⁰ vs 0.99⁵⁰)', 'Tables 2–3, Fig. 1c'],
+    [14, 3, 'RNN lab', 'Train rnn.py; compare with naive baseline', 'Listing B.3'],
+    [15, 3, 'LSTM gates and memory', 'Trace one LSTM cell by hand; train lstm.py', 'Fig. 1d, Listing B.4'],
+    [16, 3, 'Time-series forecasting practice', 'Walk-forward validation, scaling without leakage, multi-step forecasts', 'Table 15'],
+    [17, 3, 'Seq2seq and attention', 'Encoder–decoder LSTM with Bahdanau attention', 'Table 15'],
+    [18, 3, 'Sequence project lab', 'Electricity-load forecasting or log anomaly detection', 'Table 15'],
+    [19, 4, 'Self-attention and the Transformer', 'Implement attention from equations; train transformer.py', 'Fig. 1e, Listing B.5'],
+    [20, 4, 'Pre-trained Transformers', 'Fine-tune BERT with Hugging Face Trainer', 'Listing B.7, Table 16'],
+    [21, 4, 'Vision, speech and multimodal Transformers', 'ViT for X-rays, Whisper for Indian-language speech', 'Table 16'],
+    [22, 4, 'LLMs, RAG and parameter-efficient fine-tuning', 'Build a RAG chatbot; LoRA / QLoRA with PEFT', 'Table 16'],
+    [23, 4, 'Mixture of Experts', 'Router, top-k dispatch, balancing loss; train moe.py', 'Fig. 1f, Listing B.6'],
+    [24, 4, 'Serving large MoE models', 'Mixtral / DeepSeek-MoE with vLLM; tokens/s and memory study', 'Table 17'],
+    [25, 5, 'Real-time MLOps stack', 'Kafka/MQTT ingestion, MLflow tracking, FastAPI / Triton serving', 'Table 20, Fig. 5'],
+    [26, 5, 'Responsible and trustworthy AI', 'SHAP, Fairlearn, differential privacy, federated learning; DPDP Act 2023', 'Tables 18, 20'],
+    [27, 5, 'SDG capstone: kick-off', 'Choose an SDG project, define KPI, build data pipeline and baseline', 'Tables 18–19'],
+    [28, 5, 'SDG capstone: modelling', 'Train the hybrid CNN / LSTM / Transformer / MoE system', 'Table 18'],
+    [29, 5, 'SDG capstone: deployment', 'Deploy as Streamlit app or API; measure target KPI', 'Table 21'],
+    [30, 5, 'Demo day and roadmap', 'Capstone presentation, expert review, publication / patent / career roadmap', 'Part D'],
+  ],
+
+  // Table 1 (selected rows)
+  architectures: [
+    { name: 'ANN', full: 'Multi-Layer Perceptron', idea: 'Stacked fully-connected layers learn a nonlinear map from a fixed-length feature vector.',
+      eq: 'h = φ(Wx + b)', data: 'Tabular data', landmark: 'Perceptron, Wide & Deep' },
+    { name: 'CNN', full: 'Convolutional Neural Network', idea: 'Learnable local filters slide over a grid and detect spatial patterns, with shared weights.',
+      eq: 'Yᵢⱼ = Σₘ Σₙ Xᵢ₊ₘ,ⱼ₊ₙ Kₘₙ + b', data: 'Images, video, spectrograms', landmark: 'LeNet, ResNet, EfficientNet, YOLO' },
+    { name: 'RNN', full: 'Recurrent Neural Network', idea: 'One cell is re-applied at every time step, carrying a hidden state forward.',
+      eq: 'hₜ = tanh(W_hh hₜ₋₁ + W_xh xₜ + b)', data: 'Short sequences: text, sensors', landmark: 'Elman net, char-RNN' },
+    { name: 'LSTM', full: 'Long Short-Term Memory', idea: 'A gated memory cell decides what to keep, forget and output, so gradients survive long sequences.',
+      eq: 'cₜ = fₜ ⊙ cₜ₋₁ + iₜ ⊙ c̃ₜ', data: 'Speech, time series, logs', landmark: 'GNMT, ELMo, DeepLog' },
+    { name: 'Transformer', full: 'Self-attention encoder/decoder', idea: 'Every token attends to every other token in parallel via self-attention.',
+      eq: 'softmax(QKᵀ / √dₖ) V', data: 'Text, image patches, audio, multimodal', landmark: 'BERT, GPT, T5, ViT' },
+    { name: 'MoE', full: 'Mixture of Experts', idea: 'A router sends each token to only k of N expert sub-networks: huge capacity, sparse compute.',
+      eq: 'y = Σ G(x)ᵢ Eᵢ(x),  G = softmax(TopK(x W_g, k))', data: 'Web-scale pre-training', landmark: 'Switch Transformer, Mixtral 8×7B, DeepSeek-V3' },
+  ],
+
+  // Figure 5: three flagship SDG blueprints
+  blueprints: [
+    { sdg: 'SDG 2', tag: 'Zero Hunger', color: '#d4a017', title: 'Farm advisory and yield forecasting',
+      sources: ['Sentinel-2 tiles', 'IMD weather API', 'Farmer voice (IVR)'], ingest: 'Airflow batch + Kafka stream',
+      store: 'Feature store (PostGIS, S3)', models: ['U-Net crop map (CNN)', 'LSTM yield model', 'MoE LLM + RAG (ICAR)'],
+      serve: 'FastAPI + vLLM server', users: ['WhatsApp / IVR advice', 'FPO dashboard'],
+      loop: 'Compare forecast vs harvest → retrain each season' },
+    { sdg: 'SDG 7', tag: 'Clean Energy', color: '#e8b923', title: 'Solar and wind generation forecasting',
+      sources: ['Plant SCADA (1 min)', 'All-sky camera', 'NWP weather'], ingest: 'MQTT → Kafka (Flink windows)',
+      store: 'TimescaleDB time-series store', models: ['CNN cloud nowcast', 'Temporal Fusion Transformer', 'LSTM baseline / fallback'],
+      serve: 'Triton server (every 15 min)', users: ['SLDC schedule upload', 'Plant control room'],
+      loop: 'Drift monitor (Evidently) → weekly retrain' },
+    { sdg: 'SDG 9', tag: 'Industry & Innovation', color: '#e0773a', title: 'Predictive maintenance with technician copilot',
+      sources: ['Vibration sensors (kHz)', 'PLC / SCADA logs', 'Manuals + work orders'], ingest: 'Edge gateway (Jetson, MQTT)',
+      store: 'STFT spectrograms + vector DB', models: ['CNN fault classifier', 'LSTM RUL estimator', 'MoE copilot (RAG)'],
+      serve: 'ONNX Runtime edge + cloud', users: ['CMMS work order', 'Technician tablet'],
+      loop: 'Confirmed faults from work orders → relabel and retrain' },
+  ],
+
+  // Table 20
+  stack: [
+    ['Data ingestion', 'MQTT (Mosquitto), Apache Kafka, REST/webhooks'],
+    ['Stream processing', 'Apache Flink, Spark Structured Streaming, Kafka Streams'],
+    ['Storage', 'TimescaleDB / InfluxDB, PostgreSQL + PostGIS, S3 / MinIO, Delta Lake'],
+    ['Feature & vector stores', 'Feast, FAISS, Chroma, Milvus, pgvector'],
+    ['Training', 'PyTorch, PyTorch Lightning, Hugging Face (transformers, PEFT), Ultralytics YOLO, timm'],
+    ['Experiment tracking', 'MLflow, Weights & Biases, DVC'],
+    ['Orchestration', 'Apache Airflow, Kubeflow Pipelines, Prefect'],
+    ['Model serving', 'FastAPI, TorchServe, NVIDIA Triton, ONNX Runtime, vLLM'],
+    ['Edge AI', 'NVIDIA Jetson + TensorRT, TFLite, ONNX Runtime Mobile, OpenVINO'],
+    ['Monitoring', 'Evidently AI, Prometheus + Grafana, OpenTelemetry'],
+    ['Responsible AI', 'SHAP, Captum, Fairlearn, AIF360, Opacus, Flower'],
+    ['Delivery channels', 'Streamlit, React dashboards, WhatsApp Business API, IVR, Bhashini'],
+  ],
+
+  // Table 21
+  roadmap: [
+    ['Discovery', '1–2', 'Field visits with the industry partner, SDG indicator and KPI, data-sharing agreement, ethics and DPDP Act review', 'Problem statement, KPI baseline, data inventory'],
+    ['Data foundation', '2–4', 'Ingestion pipeline, labelling (Label Studio / CVAT), data-quality checks, public pre-training datasets', 'Versioned dataset, data card'],
+    ['Modelling', '3–7', 'Baselines, then CNN / LSTM / Transformer / MoE models; ablations; explainability and fairness tests', 'Model cards, benchmark report, paper draft'],
+    ['Pilot deployment', '7–10', 'Edge or cloud serving, user interface, shadow mode alongside the existing process, user training', 'Live pilot at 1–3 sites'],
+    ['Impact & scale', '10–12', 'Measure KPI change versus baseline, cost–benefit, handover with MLOps runbooks; patent / publication', 'Impact report, SDG contribution statement'],
+  ],
+};
