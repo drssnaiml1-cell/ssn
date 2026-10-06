@@ -1,0 +1,89 @@
+% =====================================================================
+\section{Related work}\label{sec:related}
+% =====================================================================
+This section reviews four lines of work that NITSCI builds on: deep learning for DR grading, lesion-aware and
+attention-based models, ordinal and imbalance-aware learning, and training strategies for small medical datasets.
+Comprehensive surveys of deep learning for DR are available in \citet{tsiknakis2021deep}.
+
+\subsection{Deep learning for DR detection and grading}
+Early applications of convolutional neural networks (CNNs) to fundus photographs showed that end-to-end learning
+could replace hand-crafted lesion detectors \citep{pratt2016convolutional,abramoff2016improved}. The study of
+\citet{gulshan2016development} trained an Inception-style network on more than 100\,000 graded images and reported
+specialist-level performance for referable DR, and similar results were obtained on independent and multi-ethnic
+cohorts \citep{gargeya2017automated,ting2017development}. Later systems extended the task to the full disease spectrum
+and to lesion-level outputs \citep{dai2021deep}. In parallel, general-purpose backbones improved steadily: residual
+networks \citep{he2016deep}, compound-scaled EfficientNets \citep{tan2019efficientnet}, the faster-training
+EfficientNetV2 family \citep{tan2021efficientnetv2}, modernised CNNs \citep{liu2022convnet}, and Vision Transformers
+\citep{dosovitskiy2021image,liu2021swin}. Most recently, retinal foundation models pretrained by self-supervision on
+hundreds of thousands of unlabelled images have improved data efficiency across retinal tasks
+\citep{zhou2023foundation}.
+
+Public benchmarks have made methods comparable. Messidor \citep{decenciere2014messidor}, DDR \citep{li2019ddr},
+APTOS-2019 \citep{aptos2019} and IDRiD \citep{porwal2018idrid} differ in population, camera, image quality and
+labelling protocol. IDRiD is particularly valuable because it combines image-level grades with pixel-level lesion
+annotations for a subset of images, and its grading challenge established an official partition and leaderboard
+\citep{porwal2020idrid}. Its small size, however, makes it a demanding test of data efficiency. Uncertainty-aware
+grading \citep{araujo2020drgraduate} and studies of reference-standard quality \citep{krause2018grader} have further
+shown that reported accuracy depends strongly on how labels and test sets are constructed.
+
+\subsection{Lesion-aware and attention-based grading}
+Because DR grades are defined by lesions, many methods try to make the network focus on them. Zoom-in-Net
+\citep{wang2017zoom} produces attention maps that highlight suspicious regions and re-examines them at higher
+resolution. Deep image mining \citep{quellec2017deep} derives lesion heat-maps from a grading network trained with
+image-level labels only. Collaborative learning \citep{zhou2019collaborative} trains lesion segmentation and grading
+jointly, using a small set of lesion masks to guide the grading network. CANet \citep{li2020canet} uses attention to
+model the relation between DR and diabetic macular oedema, and CABNet \citep{he2021cabnet} introduces a category
+attention block that learns discriminative regions for each grade under class imbalance. Lesion-aware transformers
+\citep{sun2021lesion} learn lesion queries with a transformer decoder and use them to predict the grade.
+
+Channel and spatial attention modules such as squeeze-and-excitation \citep{hu2018squeeze} and CBAM
+\citep{woo2018cbam}, as well as non-local blocks \citep{wang2018nonlocal}, are generic ways to re-weight features.
+Self-attention in Transformers \citep{vaswani2017attention} relates all positions at once, and cross-attention
+between two token streams has been used to fuse multi-scale branches in CrossViT \citep{chen2021crossvit}. Dedicated
+lesion segmentation networks, from U-Net \citep{ronneberger2015unet} to recent heterogeneous Mamba-based ensembles
+\citep{wu2026helnet,gu2023mamba}, produce explicit lesion maps but require pixel-level annotations that are expensive
+to obtain.
+
+NITSCI sits between these families. Like deep image mining it learns a lesion-attention map from grade labels alone;
+like CrossViT it uses cross-attention between two token streams; and like mixture-of-experts models
+\citep{jacobs1991adaptive,shazeer2017outrageously} it combines the streams with a learned gate. The difference from
+single-map attention modules is that the lesion map defines a \emph{second expert} whose tokens interact with the
+global expert in both directions, rather than only re-weighting a single pooled feature.
+
+\subsection{Ordinal and imbalance-aware learning}
+Ordinal classification can be reduced to a series of binary ``greater than $k$'' problems
+\citep{frank2001simple}, an idea later implemented with multiple CNN outputs \citep{niu2016ordinal} and made
+rank-consistent by CORAL \citep{cao2020rank}. Other work optimises the evaluation metric directly, for example with a
+differentiable weighted-kappa loss \citep{delatorre2018weighted}. In DR competitions a simple and robust alternative
+has been to regress the grade as a real number and to optimise the cut-points between grades on validation data;
+NITSCI follows this practice but combines the regression output with the expected value of the classification head
+so that both training signals contribute to the decision.
+
+Class imbalance is usually handled by re-weighting or re-sampling. Focal loss \citep{lin2017focal} down-weights easy
+examples, and class-balanced loss \citep{cui2019class} re-weights classes by their effective number of samples.
+Label smoothing \citep{szegedy2016rethinking} reduces over-confidence, which is useful when a few labels may be noisy.
+We use inverse-square-root class weights with label smoothing, a moderate choice that does not over-amplify the
+rarest grades.
+
+\subsection{Learning from small medical datasets}
+Transfer learning from ImageNet \citep{deng2009imagenet} is the default initialisation for medical image
+classification. Better ImageNet models tend to transfer better \citep{kornblith2019better}, and larger pretraining
+corpora such as ImageNet-21k help further \citep{ridnik2021imagenet21k}, but the benefit for medical images depends on
+the domain gap and model size \citep{raghu2019transfusion}. An intermediate fine-tuning stage on a larger in-domain
+dataset is a natural way to narrow this gap; we use APTOS-2019 for this purpose.
+
+Several inference- and optimisation-level techniques improve robustness at little cost. Ensembles of independently
+trained networks improve accuracy and uncertainty estimates \citep{lakshminarayanan2017simple}; averaging weights
+along the training trajectory, through exponential moving averages \citep{polyak1992acceleration} or stochastic
+weight averaging \citep{izmailov2018averaging}, finds flatter solutions that generalise better; and test-time
+augmentation (TTA) reduces prediction variance in medical imaging \citep{wang2019aleatoric}. Modern networks are
+often poorly calibrated \citep{guo2017calibration}, which matters when a probability threshold defines a referral
+decision.
+
+Finally, evaluation practice is critical in small-data settings. Selecting models or thresholds with the same data
+used to estimate performance biases the estimate upward \citep{varma2006bias}, and data leakage is a widespread
+source of irreproducible results in machine-learning-based science \citep{kapoor2023leakage}. Reporting guidelines
+such as TRIPOD+AI \citep{collins2024tripod} ask for a clear separation of development and evaluation data,
+confidence intervals and transparent reporting of all modelling choices. Our protocol is designed to meet these
+requirements.
+\sectionend{related}

@@ -1,0 +1,86 @@
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+% =====================================================================
+Diabetic retinopathy (DR) is a microvascular complication of diabetes mellitus and one of the leading causes of
+preventable vision loss in working-age adults. Pooled population studies estimate that roughly one in three people
+with diabetes has some degree of DR and about one in ten has a vision-threatening form \citep{yau2012global}; a more
+recent meta-analysis puts the global prevalence among people with diabetes at about 22\% and projects that the
+absolute number of affected people will keep rising through 2045 \citep{teo2021global}. Because early DR is
+asymptomatic and timely laser or anti-VEGF treatment prevents most severe vision loss, international guidelines
+recommend regular screening of every person with diabetes \citep{ting2016diabetic}.
+
+Screening is usually performed with colour fundus photography. A trained grader assigns each image to one of the five
+levels of the International Clinical Diabetic Retinopathy (ICDR) severity scale \citep{wilkinson2003proposed}:
+no apparent retinopathy (grade 0), mild non-proliferative DR with microaneurysms only (grade 1), moderate
+non-proliferative DR (grade 2), severe non-proliferative DR (grade 3) and proliferative DR (grade 4). Grades 2 and
+above are generally considered \emph{referable} and require specialist review. Manual grading is accurate when done by
+experienced readers, but it is slow, requires a scarce workforce, and shows non-negligible inter-grader variability
+\citep{krause2018grader}. In many low- and middle-income regions, where the diabetic population is growing fastest,
+the number of trained graders is far below what population screening would require \citep{ting2016diabetic}.
+
+Deep learning has changed what is technically possible. Convolutional neural networks trained on tens of thousands
+of graded photographs reach sensitivity and specificity comparable to ophthalmologists for referable DR
+\citep{gulshan2016development,gargeya2017automated,ting2017development}, systems trained on very large cohorts cover
+the whole disease spectrum \citep{dai2021deep}, and an autonomous AI system has been evaluated in a prospective
+pivotal trial in primary care \citep{abramoff2018pivotal}. A systematic review found the diagnostic performance of
+deep learning to be broadly equivalent to that of health-care professionals, while warning that few studies used
+external validation or reported their methods completely \citep{liu2019comparison}.
+
+\subsection*{Why grading on small datasets remains hard}
+These successes rely on large, often private datasets. Many research groups and most new clinical sites have access
+only to a few hundred labelled images, such as the Indian Diabetic Retinopathy Image Dataset (IDRiD)
+\citep{porwal2018idrid,porwal2020idrid}. In this regime three properties of the task become limiting.
+
+\textbf{(i) Small, sparse evidence.} Adjacent ICDR grades are separated by small findings. A single microaneurysm,
+a few pixels wide in a downsampled image, moves an image from grade 0 to grade 1; the number and distribution of
+haemorrhages and venous beading separate grade 2 from grade 3; and neovascularisation defines grade 4. A network that
+summarises the whole image by global average pooling gives every location the same weight, so a handful of
+lesion pixels can be diluted by the large area of healthy retina \citep{wang2017zoom,sun2021lesion}.
+
+\textbf{(ii) Ordered labels.} The grades are ordinal. Predicting grade 4 for a healthy eye is clinically far worse
+than predicting grade 1, but standard cross-entropy penalises both errors equally. The quadratic weighted kappa
+(QWK) used by most benchmarks \citep{cohen1968weighted} reflects this ordering, and so should the model and its
+decision rule \citep{niu2016ordinal,cao2020rank,delatorre2018weighted}.
+
+\textbf{(iii) Imbalance and instability.} Mild and severe grades are under-represented, and with few images per class
+both the learned weights and any post-hoc decision thresholds are noisy. Small datasets also make it tempting,
+and easy, to tune choices on the test set, which inflates reported performance
+\citep{varma2006bias,kapoor2023leakage}.
+
+\subsection*{Our approach}
+We address these three issues jointly in a compact model, NITSCI, and in an evaluation protocol designed for small
+datasets. For (i), the backbone features are processed by two experts: a \emph{global expert} that relates all
+retinal regions through self-attention, and a \emph{lesion expert} that sees the same features re-weighted by a
+learned lesion-attention map. Rather than fusing them by simple concatenation, the experts exchange information
+through bidirectional cross-attention, so that lesion evidence is interpreted in its anatomical context and global
+context is focused on the lesions. An image-adaptive gate, in the spirit of mixtures of experts
+\citep{jacobs1991adaptive,shazeer2017outrageously}, decides how much each expert contributes to the final
+representation. For (ii), a classification head and an ordinal regression head are trained together and combined
+into one continuous grade score. For (iii), the model is first trained on the larger APTOS-2019 dataset
+\citep{aptos2019} and then fine-tuned on IDRiD with five-fold cross-validation; class-balanced loss weights, weight
+averaging and a fold ensemble with test-time augmentation stabilise the predictions; and every data-dependent choice,
+including the decision thresholds, is made on out-of-fold predictions while a held-out test set is used exactly once.
+
+\paragraph{Contributions.} The main contributions of this work are:
+\begin{enumerate}
+\item \textbf{A cross-expert lesion-aware head.} We propose a head that splits backbone tokens into a global and a
+  lesion stream, couples them through bidirectional cross-attention, and fuses them with an image-adaptive gate. The
+  lesion stream is learned from grade labels alone, without lesion annotations. The head adds 1.40\,M parameters to
+  a 19.85\,M-parameter EfficientNetV2-S backbone.
+\item \textbf{An ordinal dual-head decision rule.} The expected grade of the classification head and the output of a
+  regression head are averaged into a continuous score whose four cut-points are fitted on out-of-fold data.
+\item \textbf{A leakage-free protocol for small datasets.} Cross-dataset pretraining, stratified five-fold
+  fine-tuning, an ensemble with test-time augmentation, and a held-out test set that is never used for training,
+  model selection or threshold fitting; results are reported with bootstrap confidence intervals and paired McNemar
+  tests.
+\item \textbf{Component-level evidence.} Seven controlled ablations, run with identical splits and seeds, isolate the
+  effect of the lesion map, cross-attention, gate, ordinal head, pretraining and pre-processing on both five-class
+  grading and referable-DR screening.
+\end{enumerate}
+
+The remainder of the paper is organised as follows. Section~\ref{sec:related} reviews related work.
+Section~\ref{sec:data} describes the datasets, data partitioning and pre-processing. Section~\ref{sec:method}
+presents the NITSCI architecture, training objective and decision rule. Section~\ref{sec:setup} gives implementation
+details, metrics and statistical methods. Section~\ref{sec:results} reports the results and ablations,
+Section~\ref{sec:discussion} discusses their implications and limitations, and Section~\ref{sec:conclusion} concludes.
+\sectionend{intro}

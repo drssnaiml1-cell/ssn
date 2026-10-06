@@ -1,0 +1,190 @@
+% =====================================================================
+\section{Results}\label{sec:results}
+% =====================================================================
+This section reports the held-out test results for five-class grading (Section~\ref{sec:res5}) and referable-DR
+screening (Section~\ref{sec:resref}), followed by the ablation study, the effect of inference-time choices, training
+behaviour, visual explanations and computational cost. Unless stated otherwise, all numbers refer to the
+\res{ntest}-image IDRiD test set and to the five-fold ensemble with test-time augmentation.
+
+\subsection{Five-class grading}\label{sec:res5}
+Table~\ref{tab:main} reports the held-out test performance. Cross-validation estimates on the training portion are
+given for comparison: OOF accuracy \res{oofacc}\% and QWK \res{oofqwk} (per-fold accuracy \res{foldacc}\%, per-fold
+QWK \res{foldqwk}).
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Five-class DR grading on the held-out IDRiD test set ($n=\res{ntest}$). Ensemble of five fold models with
+four-view TTA, decision rule chosen on OOF data. Brackets: 95\% bootstrap CI.}
+\label{tab:main}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lc@{\hspace{2.2em}}lc@{}}
+\toprule
+Metric & Value & Metric & Value\\
+\midrule
+Accuracy (\%) & \res{acc5} \res{acc5ci} & Macro precision (\%) & \res{precmacro5}\\
+Balanced accuracy (\%) & \res{bacc5} & Macro recall (\%) & \res{recmacro5}\\
+Quadratic weighted kappa & \res{qwk5} \res{qwk5ci} & Macro F1 (\%) & \res{f1macro5} \res{f1macro5ci}\\
+Cohen's kappa & \res{kappa5} & Weighted F1 (\%) & \res{f1w5}\\
+MCC & \res{mcc5} & Within-one-grade accuracy (\%) & \res{within1}\\
+Macro ROC AUC (OvR) & \res{auc5} & Macro average precision & \res{ap5}\\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Per-grade precision, recall and F1 (\%) on the test set.}
+\label{tab:perclass}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & 0 No DR & 1 Mild & 2 Moderate & 3 Severe & 4 PDR\\
+\midrule
+Support & \res{nte0} & \res{nte1} & \res{nte2} & \res{nte3} & \res{nte4}\\
+Precision & \res{p0} & \res{p1} & \res{p2} & \res{p3} & \res{p4}\\
+Recall & \res{r0} & \res{r1} & \res{r2} & \res{r3} & \res{r4}\\
+F1 & \res{f0} & \res{f1} & \res{f2} & \res{f3} & \res{f4}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:perclass} and Fig.~\ref{fig:cm}(a) show where errors occur.
+\authnote{Describe the confusion pattern: e.g.\ whether most errors are between adjacent grades (consistent with
+within-one-grade accuracy of \res{within1}\%), and which grade is weakest. Grade 1 is typically hardest because it
+is defined by microaneurysms only.}
+
+
+
+\subsection{Referable DR screening}\label{sec:resref}
+Table~\ref{tab:ref} reports the screening task. The operating threshold was fixed on OOF data before the test set was
+evaluated; the OOF AUC was \res{oofrefauc}. Figure~\ref{fig:cm} (right) shows the ROC curves.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Referable DR (grade $\geq 2$ vs.\ $<2$) on the held-out test set. Brackets: 95\% bootstrap CI.}
+\label{tab:ref}
+\begin{tabular}{@{}lc@{\hspace{2.2em}}lc@{}}
+\toprule
+Metric & Value & Metric & Value\\
+\midrule
+ROC AUC & \res{refauc} \res{refaucci} & PPV (\%) & \res{refppv}\\
+Sensitivity (\%) & \res{refsens} \res{refsensci} & NPV (\%) & \res{refnpv}\\
+Specificity (\%) & \res{refspec} \res{refspecci} & F1 (\%) & \res{reff1}\\
+Accuracy (\%) & \res{refacc} \res{refaccci} & TP / FN / FP / TN & \res{tp} / \res{fn} / \res{fp} / \res{tn}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\begin{minipage}[c]{0.6\linewidth}\centering
+\fig[0.4]{confusion.pdf}{\linewidth}{Confusion matrices (5-class and referable).}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.37\linewidth}\centering
+\fig[0.9]{roc.pdf}{\linewidth}{ROC curves.}
+\end{minipage}
+\caption{Held-out test set. Left: confusion matrices for (a) five-class grading and (b) referable DR (grade $\geq2$).
+Right: one-vs-rest ROC curves for each grade and for referable DR (bold).}
+\label{fig:cm}
+\end{figure}
+
+\subsection{Ablation study}
+Table~\ref{tab:ablation} compares the full model with the configurations of Section~\ref{sec:setup}. All runs share
+the same test images, so the McNemar $p$-value tests whether per-image correctness differs from the full model.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Ablation study on the held-out IDRiD test set. Five-class accuracy, QWK and macro F1; referable-DR AUC,
+sensitivity and specificity. $p$: exact McNemar test vs.\ the full model on five-class correctness.}
+\label{tab:ablation}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+Configuration & Params (M) & Acc (\%) & QWK & F1 (\%) & Ref.\ AUC & Sens.\ (\%) & Spec.\ (\%)\\
+\midrule
+\textbf{NITSCI (full)} & \res{abfullparams} & \res{abfullacc} & \res{abfullqwk} & \res{abfullf1} & \res{abfullrefauc} & \res{abfullrefsens} & \res{abfullrefspec}\\
+\midrule
+Plain (GAP head) & \res{abplainparams} & \res{abplainacc} & \res{abplainqwk} & \res{abplainf1} & \res{abplainrefauc} & \res{abplainrefsens} & \res{abplainrefspec}\\
+w/o APTOS pretraining & \res{abnoaptosparams} & \res{abnoaptosacc} & \res{abnoaptosqwk} & \res{abnoaptosf1} & \res{abnoaptosrefauc} & \res{abnoaptosrefsens} & \res{abnoaptosrefspec}\\
+CLAHE pre-processing & \res{abclaheparams} & \res{abclaheacc} & \res{abclaheqwk} & \res{abclahef1} & \res{abclaherefauc} & \res{abclaherefsens} & \res{abclaherefspec}\\
+w/o ordinal head & \res{abnoregparams} & \res{abnoregacc} & \res{abnoregqwk} & \res{abnoregf1} & \res{abnoregrefauc} & \res{abnoregrefsens} & \res{abnoregrefspec}\\
+w/o lesion map & \res{abnolesionparams} & \res{abnolesionacc} & \res{abnolesionqwk} & \res{abnolesionf1} & \res{abnolesionrefauc} & \res{abnolesionrefsens} & \res{abnolesionrefspec}\\
+w/o cross-attention & \res{abnocrossparams} & \res{abnocrossacc} & \res{abnocrossqwk} & \res{abnocrossf1} & \res{abnocrossrefauc} & \res{abnocrossrefsens} & \res{abnocrossrefspec}\\
+w/o adaptive gate & \res{abnogateparams} & \res{abnogateacc} & \res{abnogateqwk} & \res{abnogatef1} & \res{abnogaterefauc} & \res{abnogaterefsens} & \res{abnogaterefspec}\\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+
+\vspace{3pt}
+\parbox{\linewidth}{\footnotesize McNemar $p$ vs.\ full: Plain \res{abplainp}; w/o APTOS \res{abnoaptosp}; CLAHE \res{abclahep};
+w/o ordinal \res{abnoregp}; w/o lesion map \res{abnolesionp}; w/o cross-attention \res{abnocrossp};
+w/o gate \res{abnogatep}.
+Parameter counts of ``w/o cross-attention'' and ``w/o gate'' include the unused modules, which are kept so that
+the remaining weights are initialised identically.}
+\end{table}
+
+\authnote{Interpret Table~\ref{tab:ablation} honestly: name the components whose removal lowers accuracy/QWK by
+more than the width of the bootstrap interval or with McNemar $p<0.05$, and state plainly which components show no
+measurable effect at this test-set size. Do not claim a component ``improves'' performance if its $p$-value is
+large.}
+
+\subsection{Inference-time choices}
+Table~\ref{tab:infer} isolates the effect of the decision rule, TTA and fold ensembling without retraining. The
+decision rule was selected on OOF accuracy; test values are shown only to document the outcome of that choice.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Effect of inference-time choices. Top: decision rules (OOF accuracy was used for selection). Bottom:
+single fold models vs.\ ensemble, with and without TTA (mean $\pm$ SD over five folds for single models).}
+\label{tab:infer}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Decision rule & OOF acc.\ (\%) & Test acc.\ (\%) & Test QWK\\
+\midrule
+Argmax of $p$ & \res{oofargmax} & \res{testargmax} & \res{testargmaxqwk}\\
+Rounded score $s$ & \res{oofrounded} & \res{testrounded} & \res{testroundedqwk}\\
+Optimised thresholds on $s$ & \res{oofopt} & \res{testopt} & \res{testoptqwk}\\
+\bottomrule
+\end{tabular}
+
+\medskip
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Prediction & Test acc.\ (\%) & Test QWK\\
+\midrule
+Single fold, TTA & \res{singleacc} & \res{singleqwk}\\
+5-fold ensemble, no TTA & \res{notaacc} & \res{notaqwk}\\
+5-fold ensemble + TTA & \res{ttaacc} & \res{ttaqwk}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Training behaviour}
+Supplementary Fig.~\ref{fig:curves} shows the training loss and validation metrics for each fold. \authnote{Comment on
+convergence, the epoch at which early stopping triggered, and the spread between folds.}
+
+
+
+\subsection{Visual explanations}
+Figure~\ref{fig:explain} shows Grad-CAM maps for the predicted grade and the learned lesion-attention map $m$ for test
+images, together with the gate value $g$ (Eq.~\ref{eq:gate}). Because $m$ is learned without lesion annotations, these
+maps are qualitative only; we do not claim that they localise lesions. \authnote{Describe what the maps show, e.g.\
+whether high attention falls on haemorrhages or exudates, and whether $g$ differs between low and high grades. A
+quantitative check against the IDRiD lesion masks (e.g.\ pointing-game accuracy) would strengthen this section.}
+
+\begin{figure}[!htbp]
+\centering
+\fig[0.75]{explain.png}{0.6\linewidth}{Original image, Grad-CAM, lesion attention for four test images.}
+\caption{Test images (top), Grad-CAM for the predicted grade (middle), and the learned lesion-attention map with
+gate value $g$ (bottom), from the fold-1 model.}
+\label{fig:explain}
+\end{figure}
+
+\subsection{Computational cost}
+The full model has 21.25\,M parameters and requires 23.0\,GFLOPs per $448\times448$ image (Table~\ref{tab:cost}).
+Measured inference time on the \res{gpu} was \res{mspi}\,ms per image per model and view, so the 20-prediction
+ensemble costs about twenty times this value per image. \authnote{State whether this is acceptable for screening
+throughput, and note that a single fold model without TTA is the cheaper option whose accuracy is given in
+Table~\ref{tab:infer}.}
+
+\sectionend{results}

@@ -2,8 +2,12 @@
 
 | File | Purpose |
 |------|---------|
-| `nitsci_paper.tex` / `.pdf` | Full manuscript, from title to references |
-| `refs.bib` | 46 references (all cited), each a real publication with DOI/venue |
+| `nitsci_paper.tex` / `.pdf` | Full manuscript (title, abstract, declarations; inputs the section files) |
+| `sections/01_introduction.tex` … `08_conclusion.tex` | One file per section, each about 2 pages (Method and Results about 2.5–3, because of the architecture diagram and the results tables) |
+| `sections/09_supplementary.tex` | Supplementary figures (grade histograms, training curves) |
+| `section_pdfs/` | A separate PDF for each section, cut from the full paper |
+| `make_section_pdfs.sh` | Rebuilds the paper and the per-section PDFs |
+| `refs.bib` | 80 references (all cited), each a real publication with DOI/venue |
 | `export_results_cell.py` | Paste as the last notebook cell: exports every number plus the figures |
 | `ablation_variants.py` | Drop-in model variants for the architecture ablations |
 | `fill_results.py` | Turns `results_*.json` into `results.tex` (adds McNemar tests between runs) |
@@ -31,9 +35,10 @@ Numbers that were measured directly from the code (CPU, random weights):
      model cell, set `VARIANT`, and delete `aptos_pretrained.pth`
 3. Copy all `results_*.json` files and `figures/` here, then build:
    ```
-   python fill_results.py
-   pdflatex nitsci_paper && bibtex nitsci_paper && pdflatex nitsci_paper && pdflatex nitsci_paper
+   ./make_section_pdfs.sh        # fills results, builds the paper and section_pdfs/
    ```
+   For journal submission, set `\sectionsonnewpagesfalse` in `nitsci_paper.tex` so that
+   sections no longer start on new pages.
 4. Replace every red *[AUTHOR: ...]* note with text that matches your numbers, then
    search the PDF for `[` to confirm that no red slot remains.
 

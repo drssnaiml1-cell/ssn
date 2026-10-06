@@ -1,0 +1,91 @@
+% =====================================================================
+\section{Conclusion and future work}\label{sec:conclusion}
+% =====================================================================
+\subsection{Conclusion}
+This paper presented NITSCI, a compact network for five-level diabetic retinopathy grading from colour fundus
+photographs, designed for the common situation in which only a few hundred labelled images are available. The model
+places a cross-expert head of 1.40\,M parameters on an EfficientNetV2-S backbone. A global expert relates all retinal
+regions through self-attention; a lesion expert receives the same features re-weighted by a lesion-attention map that
+is learned from grade labels alone; the two experts exchange information through bidirectional cross-attention; and
+an image-adaptive gate decides how much each contributes. A classification head and an ordinal regression head are
+combined into one continuous grade score, so that the decision respects the order of the ICDR scale.
+
+The second contribution is the evaluation protocol. The model is pretrained on APTOS-2019, fine-tuned on IDRiD with
+stratified five-fold cross-validation, and applied as a twenty-member ensemble of fold models and flips. Every
+data-dependent decision, including the choice of decision rule, the four grade cut-points and the referral threshold,
+is made on out-of-fold predictions. The held-out test set is used once, and every result is reported with a bootstrap
+confidence interval; every ablation is compared with the full model by a paired exact test. This protocol avoids the
+optimistic bias that arises when thresholds or models are selected on the test set, a frequent problem in small
+medical datasets.
+
+Under this protocol NITSCI achieved a five-class accuracy of \res{acc5}\% (95\% CI \res{acc5ci}) with a quadratic
+weighted kappa of \res{qwk5}, and a referable-DR AUC of \res{refauc} with sensitivity \res{refsens}\% and specificity
+\res{refspec}\% on the IDRiD test set. \authnote{One or two sentences on the most important ablation findings, for
+example the effect of APTOS pretraining and of the cross-expert head relative to the plain baseline, stated with their
+confidence intervals or $p$-values.} These results indicate that careful use of a larger in-domain dataset, an
+architecture that focuses on lesion evidence without needing lesion annotations, and an ordinal decision rule can
+make DR grading on small datasets more reliable. They do not establish clinical readiness, which requires external
+and prospective validation.
+
+Table~\ref{tab:summary} links each challenge identified in the Introduction to the component of NITSCI that
+addresses it and to the experiment that measures its effect.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Summary of the challenges addressed, the corresponding design choices, and where their effect is measured.}
+\label{tab:summary}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.5cm}@{}}
+\toprule
+Challenge & Design choice in NITSCI & Evidence\\
+\midrule
+Small, sparse lesion evidence & Lesion-attention map defining a lesion expert; bidirectional cross-attention with a
+  global expert; adaptive gate & Ablations w/o lesion map, w/o cross-attention, w/o gate; plain baseline
+  (Table~\ref{tab:ablation})\\
+Ordered labels & Classification + ordinal regression heads fused into one score; cut-points fitted on OOF data &
+  Ablation w/o ordinal head; decision-rule comparison (Table~\ref{tab:infer}); QWK, within-one-grade accuracy\\
+Few labelled images & APTOS-2019 pretraining; EMA weights; five-fold ensemble with TTA & Ablation w/o APTOS;
+  single model vs.\ ensemble (Table~\ref{tab:infer})\\
+Camera and illumination differences & Ben Graham local-contrast normalisation & Ablation CLAHE
+  (Table~\ref{tab:ablation})\\
+Class imbalance & Inverse-square-root class weights, label smoothing; balanced metrics & Balanced accuracy, macro F1,
+  per-grade results (Table~\ref{tab:perclass})\\
+Optimistic evaluation & Test set used once; thresholds on OOF data; bootstrap CIs; McNemar tests &
+  Tables~\ref{tab:main}--\ref{tab:ablation}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Future work}
+Five directions follow directly from the limitations identified in Section~\ref{sec:discussion}:
+\begin{enumerate}
+\item \textbf{Official partition and benchmark comparison.} Re-running the pipeline on the official IDRiD grading
+  partition will allow direct comparison with the challenge results \citep{porwal2020idrid}.
+\item \textbf{External validation.} Evaluating the trained ensemble without any re-training on independent datasets
+  such as Messidor \citep{decenciere2014messidor} and DDR \citep{li2019ddr}, with subgroup analysis by camera and image
+  quality, will measure how well the model generalises.
+\item \textbf{Validated lesion attention.} The IDRiD lesion masks make it possible to test whether the learned
+  lesion-attention map actually highlights lesions, for example with pointing-game accuracy, and to add weak lesion
+  supervision when masks are available \citep{zhou2019collaborative}.
+\item \textbf{Stronger initialisation.} Replacing the ImageNet-21k backbone with a retinal foundation model
+  \citep{zhou2023foundation} may improve data efficiency further, and the cross-expert head can be attached to any
+  backbone that produces a spatial feature map.
+\item \textbf{Calibrated, uncertainty-aware referral.} Calibrating the referral probability
+  \citep{guo2017calibration} and using the disagreement between ensemble members as an uncertainty signal to
+  defer difficult cases to a human grader \citep{araujo2020drgraduate,lakshminarayanan2017simple} would make the system
+  safer to deploy in a screening workflow.
+\end{enumerate}
+
+\subsection{Recommendations for small-dataset grading studies}
+Beyond the specific model, our experience suggests four practices for studies that, like this one, work with a few
+hundred labelled images:
+\begin{itemize}
+\item \textbf{Lock the test set first.} Split it off before any experiment and record its indices; tune nothing on it,
+  including thresholds and the choice between decision rules.
+\item \textbf{Report uncertainty, not only point estimates.} With fewer than one hundred test images, a bootstrap
+  interval is often wider than the differences between methods; reporting it prevents over-claiming.
+\item \textbf{Compare under identical conditions.} Baselines and ablations should share splits, pre-processing,
+  augmentation and inference; numbers copied from papers that used other splits are not comparable.
+\item \textbf{Release the pipeline.} Code that regenerates every number, including the test indices and per-image
+  predictions, lets reviewers and other groups verify and extend the results.
+\end{itemize}
+\sectionend{conclusion}

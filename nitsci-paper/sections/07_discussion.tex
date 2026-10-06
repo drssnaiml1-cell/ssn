@@ -1,0 +1,85 @@
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+% =====================================================================
+\subsection{Main findings}
+On a held-out IDRiD test set that played no role in any modelling decision, NITSCI reached a five-class accuracy of
+\res{acc5}\% with a QWK of \res{qwk5}, graded \res{within1}\% of images within one level of the reference, and
+detected referable DR with an AUC of \res{refauc} at a sensitivity of \res{refsens}\% and a specificity of
+\res{refspec}\%. \authnote{Summarise in two or three sentences, using only claims supported by
+Tables~\ref{tab:main}--\ref{tab:infer}: (1) whether the full model improves on the plain baseline beyond the bootstrap
+interval; (2) which ablations had the largest effect; (3) whether the ordinal head and threshold fitting reduced large
+errors, visible in QWK and within-one-grade accuracy.}
+
+\subsection{Interpretation of the components}
+\paragraph{Cross-dataset pretraining.} APTOS-2019 differs from IDRiD in cameras, image quality and population, but
+shares the grading scale and the visual vocabulary of DR lesions. Pretraining on it exposes the model to roughly eight
+times more graded fundus images before it sees IDRiD, which is consistent with the general observation that
+in-domain data narrows the gap left by ImageNet pretraining \citep{raghu2019transfusion}. \authnote{Report the size of
+the ``w/o APTOS'' effect from Table~\ref{tab:ablation} and whether it is the largest single factor.}
+
+\paragraph{Lesion expert, cross-attention and gate.} The three architectural components address the same problem from
+different angles: the lesion map concentrates the representation on a few informative locations, cross-attention
+lets lesion tokens be interpreted in their retinal context, and the gate allows the balance between global and lesion
+evidence to vary from image to image. A plausible expectation is that the gate favours lesion evidence for borderline
+images between grades 0, 1 and 2, where the decision depends on a few lesions, and global context for advanced
+disease, where lesions are widespread. \authnote{Check this with the gate values exported for the test images, or
+remove the sentence. Report which of the three ablations changed accuracy or QWK beyond the confidence interval,
+and say plainly if a component had no measurable effect at this test-set size.}
+
+\paragraph{Ordinal head and decision rule.} Combining the expected grade of the classifier with a regression output
+produces a score that changes smoothly with disease severity, so errors tend to fall on adjacent grades. Fitting the
+cut-points on out-of-fold predictions adapts them to the class balance of IDRiD without touching the test set. The
+comparison of decision rules in Table~\ref{tab:infer} shows how much of the final accuracy is due to the rule rather
+than to the network. \authnote{Comment on whether the OOF ranking of the rules matched their test ranking; if not,
+this indicates that the threshold fit partly reflects noise in a small OOF set.}
+
+\paragraph{Ensembling and TTA.} Averaging 20 predictions per image reduces variance, which matters most for the
+under-represented grades. The difference between a single fold model and the ensemble (Table~\ref{tab:infer}) also
+quantifies a practical trade-off: a single model without TTA is twenty times cheaper at inference.
+
+\subsection{Comparison with published results}
+Direct numerical comparison with the IDRiD grading challenge \citep{porwal2020idrid} is not possible from this study,
+because the challenge uses an official train/test partition whereas we use a stratified random hold-out of the Kaggle
+copy. Numbers reported on different splits, with different pre-processing and sometimes with thresholds tuned on the
+test set, are not comparable, and placing them in the same table would mislead the reader. We therefore compare
+against a plain baseline and ablations trained under identical conditions (Table~\ref{tab:ablation}).
+\authnote{Either (a) re-run the pipeline on the official IDRiD grading partition and add a table comparing with the
+challenge results reported in \citet{porwal2020idrid}, copying the numbers from that paper; or (b) keep this paragraph.}
+
+\subsection{Interpretability}
+The lesion-attention map and Grad-CAM \citep{selvaraju2017gradcam} offer a view of where the model looks, which can help
+clinicians to spot obvious failure modes. They should not be over-interpreted: saliency maps can be insensitive to the
+model parameters \citep{adebayo2018sanity}, and post-hoc explanations of black-box models are not a substitute for
+validated, inherently interpretable evidence in high-stakes decisions \citep{rudin2019stop}. Because our lesion map is
+learned without lesion masks, we treat it as a qualitative aid only; validating it against the IDRiD lesion
+annotations is part of future work.
+
+\subsection{Limitations}
+\begin{itemize}
+\item \textbf{Small test set.} With \res{ntest} test images, confidence intervals are wide, and per-grade metrics for
+  rare grades rest on few images. Differences of a few percentage points between configurations may not be
+  statistically detectable.
+\item \textbf{Single target dataset.} All results come from IDRiD, collected at one centre with one camera.
+  Performance on other populations, cameras and image-quality levels, for example Messidor
+  \citep{decenciere2014messidor} or DDR \citep{li2019ddr}, has not been tested.
+\item \textbf{Non-official split.} The random hold-out prevents direct comparison with the IDRiD challenge.
+\item \textbf{Weakly supervised lesion map.} The lesion-attention map has not been validated against lesion masks.
+\item \textbf{Training randomness.} Variance is reflected through five folds but not through repeated runs with
+  different seeds.
+\item \textbf{Reference standard.} Grades are taken from the dataset providers; grader variability, which is
+  substantial for DR \citep{krause2018grader}, is not modelled.
+\item \textbf{Optimistic OOF estimates.} Checkpoints are selected on the same folds used for OOF predictions, so the
+  cross-validation numbers (but not the test numbers) are slightly optimistic \citep{varma2006bias}.
+\end{itemize}
+
+\subsection{Ethical and clinical considerations}
+NITSCI is a research prototype, not a medical device. Both datasets are public and de-identified. Several issues must
+be addressed before any clinical use. First, models trained on data from one population can perform worse, or fail
+silently, on others; algorithmic bias in health care has had measurable consequences \citep{obermeyer2019dissecting},
+so subgroup performance by age, sex, ethnicity and camera should be reported. Second, the operating point should be
+set together with clinicians to reach a target sensitivity rather than to maximise accuracy, since a false negative
+delays treatment while a false positive costs a specialist visit. Third, probabilities from deep networks are often
+mis-calibrated \citep{guo2017calibration}; calibration should be checked before a probability threshold is used for
+referral. Finally, prospective external validation reported according to TRIPOD+AI \citep{collins2024tripod} is
+required, as autonomous DR systems in clinical use have shown \citep{abramoff2018pivotal}.
+\sectionend{discussion}

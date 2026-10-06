@@ -1,0 +1,113 @@
+% =====================================================================
+\section{Materials}\label{sec:data}
+% =====================================================================
+\subsection{Datasets}
+\paragraph{IDRiD (target dataset).}
+The Indian Diabetic Retinopathy Image Dataset \citep{porwal2018idrid,porwal2020idrid} was collected at an eye clinic
+in Nanded, India, with a Kowa VX-10$\alpha$ fundus camera at a resolution of $4288\times2848$ pixels and a
+$50^\circ$ field of view centred near the macula. Each image is graded on the five-level ICDR scale
+\citep{wilkinson2003proposed} by medical experts; a subset also has pixel-level lesion masks, which we do not use
+for training. We use the publicly distributed Kaggle copy of the grading subset. Image files are matched to label
+rows by file name, with a fallback that compares the digit sequence in the name; after matching and de-duplication,
+\res{nidrid} graded images remain.
+
+\paragraph{APTOS-2019 (pretraining dataset).}
+The APTOS-2019 Blindness Detection dataset \citep{aptos2019} contains \res{naptos} labelled fundus photographs
+collected in rural India by the Aravind Eye Hospital, graded on the same 0--4 scale. Images come from several
+cameras and vary widely in size, illumination, focus and field of view, which makes the dataset a useful source of
+appearance diversity. It is used only for stage-1 pretraining and never for evaluation.
+
+Table~\ref{tab:data} summarises the grade distributions (shown graphically in Supplementary Fig.~\ref{fig:dist}). Both datasets
+are imbalanced: grade 0 and grade 2 dominate, while grades 1 and 3 are comparatively rare. This imbalance motivates
+the class-weighted loss (Section~\ref{sec:method}) and the use of balanced accuracy, macro-F1 and QWK alongside plain
+accuracy (Section~\ref{sec:setup}).
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Grade distribution of the datasets used. The IDRiD test split is a stratified 15\% hold-out that is never
+used for training, model selection or threshold fitting.}
+\label{tab:data}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Dataset & Grade 0 & Grade 1 & Grade 2 & Grade 3 & Grade 4 & Total\\
+\midrule
+APTOS-2019 (pretraining) & \res{nap0} & \res{nap1} & \res{nap2} & \res{nap3} & \res{nap4} & \res{naptos}\\
+IDRiD (all) & \res{nid0} & \res{nid1} & \res{nid2} & \res{nid3} & \res{nid4} & \res{nidrid}\\
+IDRiD test (held out) & \res{nte0} & \res{nte1} & \res{nte2} & \res{nte3} & \res{nte4} & \res{ntest}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Data partitioning}
+Figure~\ref{fig:split} summarises the protocol. Before any model is trained, a stratified 15\% of IDRiD
+(\res{ntest} images, random seed 42) is set aside as the test set. It is used exactly once, after all modelling
+decisions have been fixed: it plays no role in training, early stopping, checkpoint selection, threshold fitting,
+choice of the decision rule or any hyper-parameter. The remaining \res{ntrainval} images are divided into five
+stratified folds. In each fold, four parts are used for training and one for validation (early stopping and
+checkpoint selection); the validation predictions of all five folds together form the out-of-fold (OOF) set on
+which the decision rule and thresholds are fitted. For APTOS-2019, a separate stratified 90/10 split is used for
+checkpoint selection during pretraining.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=4mm and 6mm]
+  \node[blk,minimum width=3.0cm] (ap) {APTOS-2019\\90\% train / 10\% val};
+  \node[bb,right=of ap,minimum width=3.0cm] (s1) {Stage 1\\pretraining};
+  \node[blk,below=8mm of ap,minimum width=3.0cm] (id) {IDRiD (\res{nidrid})};
+  \node[blk,right=of id,minimum width=3.0cm] (tv) {train+val 85\%\\5 stratified folds};
+  \node[ex,below=5mm of tv,minimum width=3.0cm] (te) {test 15\%\\locked away};
+  \node[bb,right=of tv,minimum width=3.0cm] (s2) {Stage 2: fine-tune\\5 fold models};
+  \node[blk,right=of s2,minimum width=2.6cm] (oof) {OOF predictions\\$\rightarrow$ thresholds};
+  \node[ex,below=5mm of oof,minimum width=2.6cm] (ev) {single final\\evaluation};
+  \draw[arr] (ap)--(s1); \draw[arr] (id)--(tv); \draw[arr] (id.south) |- (te);
+  \draw[arr] (tv)--(s2); \draw[arr] (s1.east) -| (s2.north); \draw[arr] (s2)--(oof);
+  \draw[arr] (oof)--(ev); \draw[arr] (te)--(ev);
+\end{tikzpicture}
+\caption{Data protocol. The IDRiD test split (gold) is separated before training and enters only the final
+evaluation; all data-dependent decisions use APTOS or the out-of-fold IDRiD predictions.}
+\label{fig:split}
+\end{figure}
+
+\subsection{Pre-processing}
+Fundus photographs from different cameras differ in resolution, field of view, black borders and illumination. Each
+image is processed identically for both datasets (Fig.~\ref{fig:prep}):
+\begin{enumerate}
+\item images whose longer side exceeds 1600 pixels are first down-scaled with area interpolation, which keeps the
+  remaining steps fast without affecting the final $448$-pixel resolution;
+\item the black border is removed by cropping to the bounding box of pixels whose grey level exceeds 10;
+\item the image is zero-padded to a square so that the circular fundus is not distorted, and resized to
+  $448\times448$ pixels;
+\item Ben Graham's local-contrast normalisation \citep{graham2015kaggle} is applied,
+\begin{equation}
+I_{\text{ben}} = 4\,I - 4\,(G_{\sigma} * I) + 128,\qquad \sigma = 448/30,
+\label{eq:ben}
+\end{equation}
+  where $G_\sigma *$ denotes Gaussian blurring; subtracting the local mean removes slow illumination gradients and
+  camera-specific colour casts, while the factor 4 amplifies local contrast such as small red lesions and exudates;
+\item pixels outside a centred circle of radius $0.48\times448$ are set to grey (128) to suppress the bright ring
+  artefact that Eq.~\eqref{eq:ben} creates at the edge of the fundus.
+\end{enumerate}
+As an alternative pre-processing, evaluated in the ablation study, we apply contrast-limited adaptive histogram
+equalisation (CLAHE) \citep{zuiderveld1994contrast} to the green channel (clip limit 2, $8\times8$ tiles), where
+vessels and red lesions have the highest contrast, followed by an edge-preserving bilateral filter.
+Pre-processed images are cached once and then normalised with ImageNet channel statistics.
+
+\begin{figure}[!t]
+\centering
+\fig[0.26]{samples_raw.png}{0.8\linewidth}{Raw IDRiD images of grades 0, 2, 3, 4.}\\[2pt]
+\fig[0.26]{samples_pre.png}{0.8\linewidth}{The same images after pre-processing.}
+\caption{Example IDRiD images before (top) and after (bottom) cropping, padding and Ben Graham normalisation.}
+\label{fig:prep}
+\end{figure}
+
+\subsection{Data augmentation}
+To reduce over-fitting on a few hundred images, training images are augmented on the fly with random horizontal
+and vertical flips; random rotation in $[-180^\circ,180^\circ]$, which is valid because the circular fundus has no
+canonical orientation once the image is padded; translation of up to 3\%; scaling by a factor in $[0.95,1.10]$;
+colour jitter (brightness and contrast 0.2, saturation 0.1, hue 0.02); and random erasing \citep{zhong2020random}
+of 2--8\% of the image with probability 0.2, which discourages reliance on a single region. Validation and test
+images are not augmented, except for the deterministic flips used for test-time augmentation
+(Section~\ref{sec:method}).
+\sectionend{data}

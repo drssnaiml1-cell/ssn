@@ -1,0 +1,103 @@
+% =====================================================================
+\section{Experimental setup}\label{sec:setup}
+% =====================================================================
+\subsection{Implementation details}
+All experiments were implemented in PyTorch \citep{paszke2019pytorch} with the \texttt{timm} model library
+\citep{wightman2019timm} and scikit-learn \citep{pedregosa2011scikit}, and run on a single \res{gpu} GPU. Mixed
+precision (fp16) \citep{micikevicius2018mixed} was used for training and inference, and Grad-CAM maps were computed
+with the \texttt{pytorch-grad-cam} library \citep{gildenblat2021gradcam}. Random seeds were fixed to 42 for
+data splitting and pretraining and to $42+k$ for fold $k$. Table~\ref{tab:hparams} lists all hyper-parameters; none of
+them was tuned on the test set. After early stopping, the number of epochs actually run in the five folds was
+(\res{epochsrun}).
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Training and inference hyper-parameters. Values marked $\dagger$ are shared by both stages.}
+\label{tab:hparams}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Setting & Stage 1 (APTOS-2019) & Stage 2 (IDRiD, per fold)\\
+\midrule
+Initialisation & ImageNet-21k backbone & stage-1 weights\\
+Epochs (max.) & 10 & 25, early stopping (patience 8)\\
+Peak learning rate (head / backbone) & $3\times10^{-4}$ / $1\times10^{-4}$ & $2\times10^{-4}$ / $6.7\times10^{-5}$\\
+EMA decay & 0.999 & 0.99\\
+Optimiser$^\dagger$ & \multicolumn{2}{l}{AdamW \citep{loshchilov2019decoupled}, weight decay $10^{-4}$}\\
+Schedule$^\dagger$ & \multicolumn{2}{l}{one-cycle cosine, 10\% warm-up \citep{smith2019super}}\\
+Batch size$^\dagger$ & \multicolumn{2}{l}{16; gradient clipping at $\ell_2$ norm 2.0}\\
+Input size$^\dagger$ & \multicolumn{2}{l}{$448\times448$, Ben Graham pre-processing}\\
+Loss weights$^\dagger$ & \multicolumn{2}{l}{$\lambda_r=0.5$ (ordinal), $\lambda_m=0.01$ (sparsity), label smoothing 0.05}\\
+Class weights$^\dagger$ & \multicolumn{2}{l}{$w_c\propto n_c^{-1/2}$, normalised to mean 1, computed on training data}\\
+Checkpoint selection$^\dagger$ & \multicolumn{2}{l}{max.\ validation accuracy + QWK (EMA weights, fixed cut-points, no TTA)}\\
+Inference & -- & 5 fold models $\times$ 4 flips = 20 predictions per image\\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Evaluation metrics}
+Let $y_i$ and $\hat y_i$ be the reference and predicted grades of test image $i$, $i=1,\dots,n$, and let $O$ be the
+$5\times5$ confusion matrix with entries $O_{jk}$ counting images of grade $j$ predicted as grade $k$.
+
+\paragraph{Five-class grading.} \emph{Accuracy} is the fraction of exactly correct grades. Because the classes are
+imbalanced, we also report \emph{balanced accuracy}, the mean of the per-class recalls, and the macro-averaged
+precision, recall and F1, which weight every grade equally. The \emph{quadratic weighted kappa}
+\citep{cohen1968weighted} measures agreement beyond chance while penalising errors by the squared grade distance:
+\begin{equation}
+\kappa_w = 1 - \frac{\sum_{j,k} W_{jk}\,O_{jk}}{\sum_{j,k} W_{jk}\,E_{jk}},\qquad
+W_{jk} = \frac{(j-k)^2}{(K-1)^2},
+\end{equation}
+where $E$ is the expected confusion matrix under independence (outer product of the marginal histograms, scaled to
+$n$) and $K=5$. We also report unweighted Cohen's kappa, the Matthews correlation coefficient (MCC), the
+\emph{within-one-grade accuracy} $\frac1n\sum_i \mathbb{1}[|y_i-\hat y_i|\le1]$, which quantifies how many errors are
+between adjacent grades, and macro one-vs-rest ROC AUC and average precision computed from the ensemble
+probabilities.
+
+\paragraph{Referable DR.} With TP, FN, FP and TN counted for the binary task (grade $\geq2$ vs.\ $<2$), we report
+sensitivity $\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$, specificity $\mathrm{TN}/(\mathrm{TN}+\mathrm{FP})$, positive and
+negative predictive values, accuracy, F1 and the threshold-free ROC AUC of $P(\text{referable})$. Sensitivity is the
+clinically most important quantity, because a missed referable case delays treatment.
+
+\subsection{Statistical analysis}
+\paragraph{Confidence intervals.} For each test metric we compute a 95\% percentile bootstrap interval
+\citep{efron1993introduction}: the $n$ test images are resampled with replacement 2000 times, the metric is recomputed
+on each resample, and the 2.5th and 97.5th percentiles are reported. Predictions are fixed during resampling, so the
+interval reflects uncertainty due to the finite test set, not training randomness.
+
+\paragraph{Paired comparisons.} All configurations are evaluated on the same test images, so we compare each
+ablation with the full model using the two-sided exact McNemar test on per-image correctness
+\citep{dietterich1998approximate}. If $b$ images are correct only for the full model and $c$ only for the ablation,
+the $p$-value is
+\begin{equation}
+p = \min\!\Big(1,\; 2\sum_{i=0}^{\min(b,c)} \binom{b+c}{i}\,2^{-(b+c)}\Big).
+\end{equation}
+We report $p$-values without claiming significance for a single threshold; seven ablations are compared, so a
+Bonferroni-adjusted level of $0.05/7\approx0.007$ is the conservative reference.
+
+\paragraph{Cross-validation estimates.} We additionally report OOF metrics and their mean and standard deviation across
+folds. These are slightly optimistic, because each fold's checkpoint is selected on the same fold
+\citep{varma2006bias}; they are given for completeness and are not used as the main result.
+
+\subsection{Compared configurations}
+All configurations use identical splits, seeds, augmentation, schedule and inference, and differ in one factor only:
+\begin{itemize}
+\item \textbf{Plain}: the same backbone and $1\times1$ projection, followed by global average pooling and the same
+  dual head and loss. This is the standard transfer-learning baseline and isolates the effect of the whole
+  cross-expert head.
+\item \textbf{w/o APTOS}: no stage-1 pretraining; the model is initialised from ImageNet-21k only.
+\item \textbf{CLAHE}: CLAHE + bilateral filtering instead of Ben Graham pre-processing, with stage 1 repeated.
+\item \textbf{w/o ordinal head}: $\lambda_r=0$; the regression output is untrained, and the decision-rule selection on OOF
+  data (Section~\ref{sec:decision}) decides whether the score $s$ or the argmax of $p$ is used.
+\item \textbf{w/o lesion map}: $m\equiv1$; the lesion expert receives all tokens with equal weight.
+\item \textbf{w/o cross-attention}: the experts are only normalised, $G'=\mathrm{LN}(G)$, $L'=\mathrm{LN}(L)$.
+\item \textbf{w/o gate}: the gate is fixed to $g=0.5$, i.e.\ equal contribution of both experts.
+\end{itemize}
+For the architectural variants, stage 1 is repeated so that pretraining and fine-tuning use the same architecture.
+
+\subsection{Reproducibility}
+The notebook, the export cell that writes every reported number and figure, the ablation variants and the script that
+inserts the numbers into this manuscript are released together (see Code availability). The held-out test indices and
+per-image predictions are stored in the exported results, so every table can be regenerated and every comparison
+re-tested without retraining.
+\sectionend{setup}
