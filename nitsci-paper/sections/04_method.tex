@@ -8,33 +8,15 @@ and fused by a gate; two heads produce a class distribution and a continuous gra
 
 \begin{figure}[!htbp]
 \centering
-\begin{tikzpicture}[node distance=5mm and 5mm]
-  \node[blk] (x) {Fundus image\\$3\times448\times448$};
-  \node[bb,right=of x] (bb) {EfficientNetV2-S\\(last stage, stride 32)\\$256\times14\times14$};
-  \node[blk,right=of bb] (proj) {$1\times1$ conv, BN, GELU\\$F\in\mathbb{R}^{D\times14\times14}$\\$D=256$};
-  \node[ex,below=9mm of proj,xshift=-14mm] (les) {Lesion head\\$3\times3$ conv, GELU, $1\times1$ conv,\\sigmoid $\rightarrow m$};
-  \node[blk,right=10mm of proj] (tok) {tokens $T$\\$N=196$};
-  \node[ex,below=9mm of tok,xshift=-8mm] (L) {Lesion expert\\$L=T\odot m$};
-  \node[bb,below=9mm of tok,xshift=16mm] (G) {Global expert\\Transformer layer\\$G=\mathrm{TE}(T)$};
-  \node[blk,below=8mm of L,xshift=12mm,minimum width=4.6cm] (ca) {Bidirectional cross-attention\\$G\leftarrow L$ and $L\leftarrow G$, residual + LN};
-  \node[blk,below=6mm of ca,xshift=-16mm] (vl) {$v_\ell$: lesion-weighted\\mean of $L$};
-  \node[blk,below=6mm of ca,xshift=16mm] (vg) {$v_g$: mean of $G$};
-  \node[blk,below=6mm of vl,xshift=16mm,minimum width=4.6cm] (gate) {Adaptive gate $g=\sigma(w^\top[v_g;v_\ell])$\\$z=\mathrm{GELU}(g\,W_Gv_g+(1-g)\,W_Lv_\ell)$};
-  \node[blk,below=6mm of gate,xshift=-18mm] (cls) {Classification head\\$p\in\Delta^4$};
-  \node[blk,below=6mm of gate,xshift=18mm] (reg) {Regression head\\$r\in\mathbb{R}$};
-  \node[ex,below=6mm of gate,yshift=-14mm,minimum width=4.6cm] (s) {Grade score $s=\tfrac12\sum_k k\,p_k+\tfrac12 r$\\$\rightarrow$ thresholds fitted on OOF data};
-  \draw[arr] (x)--(bb); \draw[arr] (bb)--(proj); \draw[arr] (proj)--(tok);
-  \draw[arr] (proj.south) -- (les.north);
-  \draw[arr] (les.east) -- (L.west);
-  \draw[arr] (tok) -- (L); \draw[arr] (tok) -- (G);
-  \draw[arr] (L) -- (L|-ca.north); \draw[arr] (G) -- (G|-ca.north);
-  \draw[arr] (ca.south-|vl) -- (vl); \draw[arr] (ca.south-|vg) -- (vg);
-  \draw[arr] (vl) -- (vl|-gate.north); \draw[arr] (vg) -- (vg|-gate.north);
-  \draw[arr] (gate.south-|cls) -- (cls); \draw[arr] (gate.south-|reg) -- (reg);
-  \draw[arr] (cls) -- (cls|-s.north); \draw[arr] (reg) -- (reg|-s.north);
-\end{tikzpicture}
-\caption{NITSCI architecture. Blue: backbone and global expert. Gold: lesion pathway and decision score. Token
-counts are for a $448\times448$ input. The lesion map $m$ is learned from grade labels only.}
+\includegraphics[width=\linewidth]{figures/nitsci_method.png}
+\caption{Overview of the proposed method. \textbf{(A)} Data preparation and two-stage transfer learning: APTOS-2019
+and IDRiD images are pre-processed identically; the full model is pretrained on APTOS-2019 (stage 1) and fine-tuned
+on five stratified IDRiD folds (stage 2), while a stratified 15\% IDRiD test set is locked away; out-of-fold
+predictions fix the decision rule, the grade thresholds $\theta_1,\dots,\theta_4$ and the referral cut-off.
+\textbf{(B)} NITSCI architecture: EfficientNetV2-S features are projected to $N=196$ tokens, processed by a global
+expert and by a lesion expert $L=T\odot m$ built from a learned lesion map $m$, coupled by bidirectional
+cross-attention, pooled and fused by an adaptive gate $g$; classification and regression heads are combined into the
+grade score $s$. Purple: global pathway; orange: lesion pathway; green: outputs.}
 \label{fig:arch}
 \end{figure}
 

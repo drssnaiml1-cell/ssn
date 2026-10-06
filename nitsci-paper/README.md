@@ -5,6 +5,7 @@
 | `nitsci_paper.tex` / `.pdf` | Full manuscript (title, abstract, declarations; inputs the section files) |
 | `sections/01_introduction.tex` … `08_conclusion.tex` | One file per section, each about 2 pages (Method and Results about 2.5–3, because of the architecture diagram and the results tables) |
 | `sections/09_supplementary.tex` | Supplementary figures (grade histograms, training curves) |
+| `figures/nitsci_method.excalidraw` (+ `.png`, `.svg`) | Method overview figure (Fig. 2). Open the `.excalidraw` file at excalidraw.com to edit it; `figures/excalidraw_src/` holds the scripts that generated and rendered it |
 | `section_pdfs/` | A separate PDF for each section, cut from the full paper |
 | `make_section_pdfs.sh` | Rebuilds the paper and the per-section PDFs |
 | `refs.bib` | 80 references (all cited), each a real publication with DOI/venue |

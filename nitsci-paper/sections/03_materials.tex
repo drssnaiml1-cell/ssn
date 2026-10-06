@@ -41,7 +41,7 @@ IDRiD test (held out) & \res{nte0} & \res{nte1} & \res{nte2} & \res{nte3} & \res
 
 
 \subsection{Data partitioning}
-Figure~\ref{fig:split} summarises the protocol. Before any model is trained, a stratified 15\% of IDRiD
+Figure~\ref{fig:arch}(A) summarises the protocol. Before any model is trained, a stratified 15\% of IDRiD
 (\res{ntest} images, random seed 42) is set aside as the test set. It is used exactly once, after all modelling
 decisions have been fixed: it plays no role in training, early stopping, checkpoint selection, threshold fitting,
 choice of the decision rule or any hyper-parameter. The remaining \res{ntrainval} images are divided into five
@@ -50,25 +50,7 @@ checkpoint selection); the validation predictions of all five folds together for
 which the decision rule and thresholds are fitted. For APTOS-2019, a separate stratified 90/10 split is used for
 checkpoint selection during pretraining.
 
-\begin{figure}[!htbp]
-\centering
-\begin{tikzpicture}[node distance=4mm and 6mm]
-  \node[blk,minimum width=3.0cm] (ap) {APTOS-2019\\90\% train / 10\% val};
-  \node[bb,right=of ap,minimum width=3.0cm] (s1) {Stage 1\\pretraining};
-  \node[blk,below=8mm of ap,minimum width=3.0cm] (id) {IDRiD (\res{nidrid})};
-  \node[blk,right=of id,minimum width=3.0cm] (tv) {train+val 85\%\\5 stratified folds};
-  \node[ex,below=5mm of tv,minimum width=3.0cm] (te) {test 15\%\\locked away};
-  \node[bb,right=of tv,minimum width=3.0cm] (s2) {Stage 2: fine-tune\\5 fold models};
-  \node[blk,right=of s2,minimum width=2.6cm] (oof) {OOF predictions\\$\rightarrow$ thresholds};
-  \node[ex,below=5mm of oof,minimum width=2.6cm] (ev) {single final\\evaluation};
-  \draw[arr] (ap)--(s1); \draw[arr] (id)--(tv); \draw[arr] (id.south) |- (te);
-  \draw[arr] (tv)--(s2); \draw[arr] (s1.east) -| (s2.north); \draw[arr] (s2)--(oof);
-  \draw[arr] (oof)--(ev); \draw[arr] (te)--(ev);
-\end{tikzpicture}
-\caption{Data protocol. The IDRiD test split (gold) is separated before training and enters only the final
-evaluation; all data-dependent decisions use APTOS or the out-of-fold IDRiD predictions.}
-\label{fig:split}
-\end{figure}
+
 
 \subsection{Pre-processing}
 Fundus photographs from different cameras differ in resolution, field of view, black borders and illumination. Each
