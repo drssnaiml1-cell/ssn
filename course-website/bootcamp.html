@@ -11,16 +11,19 @@
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <style>
 :root{
-  --navy:#0d1f3c; --navy2:#1b3563; --gold:#c9a227; --gold2:#f0d47a; --goldbg:#fbf6e7;
-  --ink:#1f2937; --muted:#64748b; --line:#e7e2d3; --bg:#ffffff; --soft:#f7f8fb;
+  --navy:#0d1f3c; --navy2:#1b3563; --gold:#c9a227; --gold2:#f0d47a; --goldtext:#7d600e; --goldbg:#fbf6e7;
+  --ink:#1f2937; --muted:#55606f; --line:#e7e2d3; --bg:#ffffff; --soft:#f7f8fb;
   --r:14px; --shadow:0 10px 30px rgba(13,31,60,.08);
   --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
+html,body{overflow-x:clip}
 body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
 a{color:var(--navy2)}
 .wrap{width:min(1140px,100% - 32px);margin-inline:auto}
@@ -32,7 +35,8 @@ a{color:var(--navy2)}
 .btn-line{border-color:rgba(255,255,255,.45);color:#fff}
 .btn-line:hover{border-color:var(--gold);color:var(--gold)}
 .btn-navy{background:var(--navy);color:#fff}
-.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold)}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--goldtext)}
+.hero .tag,.fee .tag{color:var(--gold)}
 h1,h2,h3{line-height:1.2;margin:0}
 .sec{padding:84px 0}
 .sec.soft{background:var(--soft)}
@@ -46,10 +50,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo i{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--navy);color:var(--gold);font:800 .9rem var(--font);font-style:normal}
 .logo b{color:var(--navy);letter-spacing:.03em}
-.logo span{color:var(--gold);font-weight:600;font-size:.9rem}
+.logo span{color:var(--goldtext);font-weight:600;font-size:.9rem}
 nav{display:flex;align-items:center;gap:26px}
 nav a{text-decoration:none;color:var(--ink);font-weight:600;font-size:.94rem}
-nav a:hover{color:var(--gold)}
+nav a:hover{color:var(--goldtext)}
 nav .btn{padding:.6em 1.2em;color:var(--navy)}
 .burger{display:none;background:none;border:0;font-size:1.7rem;color:var(--navy);cursor:pointer}
 
@@ -77,7 +81,7 @@ nav .btn{padding:.6em 1.2em;color:var(--navy)}
   transition:transform .2s,box-shadow .2s;cursor:pointer}
 .mod:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(13,31,60,.12)}
 .mod .num{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--navy);color:var(--gold);font-weight:800;margin-bottom:14px}
-.mod small{color:var(--gold);font-weight:700;font-size:.8rem}
+.mod small{color:var(--goldtext);font-weight:700;font-size:.8rem}
 .mod h3{font-size:1.08rem;color:var(--navy);margin:4px 0 0}
 .mod:not(:last-child)::after{content:"→";position:absolute;right:-15px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;font-size:1.2rem}
 
@@ -88,14 +92,14 @@ nav .btn{padding:.6em 1.2em;color:var(--navy)}
 .acc summary::-webkit-details-marker{display:none}
 .acc summary .num{flex:none;width:42px;height:42px;border-radius:11px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-weight:800}
 .acc summary h3{font-size:1.12rem;color:var(--navy)}
-.acc summary small{display:block;color:var(--gold);font-weight:700;font-size:.8rem}
-.acc summary .chev{margin-left:auto;font-size:1.3rem;color:var(--gold);transition:transform .2s}
+.acc summary small{display:block;color:var(--goldtext);font-weight:700;font-size:.8rem}
+.acc summary .chev{margin-left:auto;font-size:1.3rem;color:var(--goldtext);transition:transform .2s}
 .acc details[open] .chev{transform:rotate(45deg)}
 .days{border-top:1px solid var(--line)}
 .day{display:grid;grid-template-columns:72px 1fr 1.25fr;gap:16px;padding:14px 24px;border-bottom:1px solid #f1ede1;align-items:start}
 .day:last-child{border-bottom:0}
 .day:nth-child(even){background:#fdfbf4}
-.day .d{font-weight:800;color:var(--gold);font-size:.9rem}
+.day .d{font-weight:800;color:var(--goldtext);font-size:.9rem}
 .day .t{font-weight:700;color:var(--navy)}
 .day .l{color:#475569;font-size:.95rem}
 .day .l b{color:var(--ink);font-weight:600}
@@ -105,7 +109,7 @@ nav .btn{padding:.6em 1.2em;color:var(--navy)}
 code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
 
 /* day explorer */
-.explorer{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 44px rgba(13,31,60,.10);padding:22px;margin:0 auto 54px;max-width:1000px;outline:none}
+.explorer{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 44px rgba(13,31,60,.10);padding:22px;margin:0 auto 54px;max-width:1000px;outline:none}
 .explorer:focus-visible{box-shadow:0 0 0 4px rgba(201,162,39,.35)}
 .ex-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 .ex-progress{flex:1;height:8px;background:#eef0f5;border-radius:99px;overflow:hidden}
@@ -114,12 +118,12 @@ code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
 .ex-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:#fff;color:var(--navy);font-size:1.05rem;cursor:pointer;display:grid;place-items:center;transition:background .15s,border-color .15s}
 .ex-btn:hover{border-color:var(--gold)}
 .ex-btn.play{background:var(--navy);color:var(--gold);border-color:var(--navy)}
-.ex-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory;scrollbar-width:thin}
-.ex-day{flex:none;scroll-snap-align:center;width:46px;height:54px;border-radius:12px;border:0;cursor:pointer;color:#fff;font:800 1rem var(--font);display:grid;place-items:center;position:relative;opacity:.55;transition:opacity .2s,transform .2s}
-.ex-day small{position:absolute;top:3px;font-size:.55rem;font-weight:700;opacity:.9}
-.ex-day:hover{opacity:.85}
-.ex-day.on{opacity:1;transform:translateY(-3px) scale(1.06);box-shadow:0 8px 18px rgba(13,31,60,.25)}
-.ex-day.done{opacity:.85}
+.ex-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 6px 14px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.ex-day{flex:none;scroll-snap-align:center;width:46px;height:54px;border-radius:12px;border:0;cursor:pointer;color:#fff;font:800 1rem var(--font);display:grid;place-items:center;position:relative;transition:transform .2s,box-shadow .2s}
+.ex-day small{position:absolute;top:3px;font-size:.55rem;font-weight:700}
+.ex-day:hover{transform:translateY(-2px)}
+.ex-day.on{transform:translateY(-3px) scale(1.06);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--navy),0 8px 18px rgba(13,31,60,.25)}
+.ex-day.done{filter:none}
 .ex-card{display:grid;grid-template-columns:200px 1fr;gap:28px;margin-top:8px;padding:26px;border-radius:16px;background:linear-gradient(135deg,#fbf6e7 0%,#ffffff 60%);border:1px solid var(--line);min-height:250px}
 .ex-card.anim{animation:exIn .45s ease both}
 @keyframes exIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
@@ -149,7 +153,7 @@ code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
 .role-card.anim{animation:exIn .4s ease both}
 .role-card h3{color:var(--navy);font-size:1.5rem;margin-bottom:8px}
 .role-card p{margin:0 0 14px;color:#475569}
-.role-card .lbl{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin:14px 0 6px}
+.role-card .lbl{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--goldtext);margin:14px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:var(--goldbg);border:1px solid #eadfbb;border-radius:999px;padding:.2em .75em;font-size:.84rem;font-weight:600;color:var(--navy)}
 .chip.modchip{background:#eef3fb;border-color:#d3def0}
@@ -165,7 +169,7 @@ code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
 .tier{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);text-align:center}
 .tier b{display:block;font-size:1.5rem;color:var(--navy);margin:6px 0 2px}
 .tier span{font-size:.85rem;color:var(--muted)}
-.tier h4{margin:0;font-size:.95rem;color:var(--gold)}
+.tier h4{margin:0;font-size:.95rem;color:var(--goldtext)}
 .sub-title{text-align:center;color:var(--navy);font-size:1.35rem;margin:0 0 20px}
 .sectors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:56px}
 .sector{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);transition:transform .2s}
@@ -173,7 +177,7 @@ code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
 .sector .ic{font-size:1.7rem}
 .sector h4{margin:8px 0 6px;color:var(--navy);font-size:1.02rem}
 .sector p{margin:0 0 8px;font-size:.88rem;color:#475569}
-.sector small{display:block;font-size:.78rem;color:var(--gold);font-weight:700}
+.sector small{display:block;font-size:.78rem;color:var(--goldtext);font-weight:700}
 .path{list-style:none;padding:0;margin:0 0 30px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:st}
 .path li{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px 16px;position:relative;box-shadow:var(--shadow)}
 .path li::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--gold);font-weight:800;margin-bottom:10px}
@@ -217,6 +221,7 @@ form{display:grid;gap:14px}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:#475569}
 .consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--gold)}
 .hp{position:absolute;left:-9999px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .submit{justify-self:start;min-width:200px;justify-content:center}
 .submit[disabled]{opacity:.65;cursor:wait;transform:none}
 .status{border-radius:10px;padding:14px 16px;font-size:.95rem;display:none}
@@ -228,7 +233,7 @@ form{display:grid;gap:14px}
 .faq details{border-bottom:1px solid var(--line);padding:4px 0}
 .faq summary{cursor:pointer;list-style:none;padding:16px 36px 16px 0;font-weight:700;color:var(--navy);position:relative}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";position:absolute;right:4px;top:12px;font-size:1.5rem;color:var(--gold)}
+.faq summary::after{content:"+";position:absolute;right:4px;top:12px;font-size:1.5rem;color:var(--goldtext)}
 .faq details[open] summary::after{content:"−"}
 .faq p{margin:0 0 18px;color:#475569}
 
@@ -280,7 +285,7 @@ footer a{color:var(--gold2);text-decoration:none}
   .logo span{display:none}
   .hero{padding:60px 0 50px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}}
 @media print{
   header,.float,.cta,#contact,#faq,#careers,.explorer,.full-title,footer .fbot{display:none!important}
   .hero{background:#0d1f3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:24px 0}
@@ -295,7 +300,7 @@ footer a{color:var(--gold2);text-decoration:none}
 <header>
   <div class="wrap hrow">
     <a class="logo" href="#top"><i>AP</i><div><b>ALGOPROFESSOR</b> <span>AI R&amp;D Solutions</span></div></a>
-    <button class="burger" aria-label="Menu" aria-expanded="false">☰</button>
+    <button type="button" class="burger" aria-label="Menu" aria-expanded="false">☰</button>
     <nav>
       <a href="#modules">Modules</a>
       <a href="#syllabus">Syllabus</a>
@@ -308,6 +313,7 @@ footer a{color:var(--gold2);text-decoration:none}
   </div>
 </header>
 
+<main id="main">
 <section class="hero" id="top">
   <div class="wrap">
     <span class="tag">Part E &bull; AlgoProfessor 30-Day Industry Program</span>
@@ -446,17 +452,17 @@ footer a{color:var(--gold2);text-decoration:none}
       <div class="formbox">
         <h2>Enrol / enquire</h2>
         <p>Fill in the form and the program team will reply by email with cohort dates and enrolment details.</p>
-        <form id="enquiry" action="https://formsubmit.co/ceo@algoprofessor.com" method="POST" novalidate>
+        <form id="enquiry" action="https://formsubmit.co/cto@algoprofessor.com" method="POST" novalidate>
           <input type="hidden" name="_subject" value="New enquiry: Neurons to MoE 30-Day Bootcamp">
           <input type="hidden" name="_template" value="table">
           <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="two">
-            <div class="field"><label for="f-name">Full name <i>*</i></label><input id="f-name" name="Name" required autocomplete="name"><span class="err"></span></div>
+            <div class="field"><label for="f-name">Full name <i>*</i></label><input id="f-name" type="text" name="Name" required autocomplete="name"><span class="err"></span></div>
             <div class="field"><label for="f-email">Email <i>*</i></label><input id="f-email" name="Email" type="email" required autocomplete="email"><span class="err"></span></div>
           </div>
           <div class="two">
             <div class="field"><label for="f-phone">Mobile / WhatsApp <i>*</i></label><input id="f-phone" name="Phone" type="tel" required autocomplete="tel" placeholder="+91 98765 43210"><span class="err"></span></div>
-            <div class="field"><label for="f-org">College / organisation</label><input id="f-org" name="Organisation" autocomplete="organization"><span class="err"></span></div>
+            <div class="field"><label for="f-org">College / organisation</label><input id="f-org" type="text" name="Organisation" autocomplete="organization"><span class="err"></span></div>
           </div>
           <div class="two">
             <div class="field"><label for="f-role">I am a <i>*</i></label>
@@ -496,6 +502,9 @@ footer a{color:var(--gold2);text-decoration:none}
   </div>
 </section>
 
+<a class="btn btn-gold float" href="#contact" aria-label="Apply or enquire">Apply →</a>
+</main>
+
 <footer>
   <div class="wrap">
     <div class="frow">
@@ -508,7 +517,6 @@ footer a{color:var(--gold2);text-decoration:none}
   </div>
 </footer>
 
-<a class="btn btn-gold float" href="#contact">Apply →</a>
 
 <script>
 const MODULES = [
@@ -569,7 +577,7 @@ document.getElementById('closeAll').onclick = () => document.querySelectorAll('#
 window.addEventListener('beforeprint', () => document.querySelectorAll('#acc details').forEach(d => d.open = true));
 
 // ---------------- dynamic day explorer ----------------
-const MOD_COLORS = ['#c9a227', '#3b6fd0', '#1f9a7d', '#7c4dcc', '#e0703a'];
+const MOD_COLORS = ['#86650f', '#2f5fbf', '#146f5c', '#6a3fb8', '#a8481a'];   // all >= 4.8:1 contrast with white text
 const MOD_GOALS = [
   'Build and train neural networks from first principles in PyTorch.',
   'See with CNNs: classify, detect, segment, explain and deploy to the edge.',
@@ -588,7 +596,7 @@ const FORMAT = {
 };
 let cur = 1, timer = null;
 const strip = document.getElementById('exStrip'), card = document.getElementById('exCard');
-strip.innerHTML = DAYS.map(x => `<button type="button" class="ex-day" role="tab" data-d="${x.d}" style="background:${MOD_COLORS[x.m - 1]}" aria-label="Day ${x.d}: ${esc(x.t)}"><small>M${x.m}</small>${x.d}</button>`).join('');
+strip.innerHTML = DAYS.map(x => `<button type="button" class="ex-day" role="tab" data-d="${x.d}" style="background:${MOD_COLORS[x.m - 1]}" title="Day ${x.d}: ${esc(x.t)}"><small aria-hidden="true">M${x.m}</small><span class="sr">Day </span>${x.d}<span class="sr">: ${esc(x.t)}</span></button>`).join('');
 function showDay(d, scroll = true) {
   cur = Math.min(30, Math.max(1, d));
   const x = DAYS[cur - 1], [type, icon] = dayType(x), col = MOD_COLORS[x.m - 1], nx = DAYS[cur];
@@ -716,7 +724,9 @@ const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.
   if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: .12 }) : null;
 document.querySelectorAll('.rv').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 
-// contact form: validate, then send through FormSubmit (emails ceo@algoprofessor.com)
+// contact form: validate, then send through FormSubmit, which emails each enquiry to FORM_TO
+const FORM_TO = 'cto@algoprofessor.com';
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + FORM_TO;
 const form = document.getElementById('enquiry'), statusBox = document.getElementById('status');
 function setErr(input, msg) {
   const f = input.closest('.field'); if (!f) return;
@@ -743,7 +753,7 @@ form.addEventListener('submit', async e => {
   const btn = form.querySelector('.submit');
   btn.disabled = true; btn.textContent = 'Sending…';
   try {
-    const res = await fetch('https://formsubmit.co/ajax/ceo@algoprofessor.com', {
+    const res = await fetch(FORM_ENDPOINT, {
       method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(Object.fromEntries(new FormData(form))),
     });
@@ -755,9 +765,9 @@ form.addEventListener('submit', async e => {
   } catch (err) {
     const body = [...new FormData(form)].filter(([k]) => !k.startsWith('_')).map(([k, v]) => `${k}: ${v}`).join('\n');
     statusBox.className = 'status fail';
-    statusBox.innerHTML = 'Sorry, the form could not be sent right now. Please <a href="mailto:ceo@algoprofessor.com?subject=' +
+    statusBox.innerHTML = 'Sorry, the form could not be sent right now. Please <a href="mailto:' + FORM_TO + '?subject=' +
       encodeURIComponent('Enquiry: Neurons to MoE 30-Day Bootcamp') + '&body=' + encodeURIComponent(body) +
-      '">send it by email instead</a> (your details are filled in), or write to ceo@algoprofessor.com.';
+      '">send it by email instead</a> (your details are filled in), or write to ' + FORM_TO + '.';
   } finally {
     btn.disabled = false; btn.textContent = 'Send enquiry';
   }

@@ -1,0 +1,452 @@
+{
+ "base": "http://127.0.0.1:8080/",
+ "passed": 89,
+ "total": 89,
+ "results": [
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "page loads with HTTP 200",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "no JavaScript errors on load",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "<html lang=\"en\"> is set",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "<title> mentions the bootcamp",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "meta description present (50–170 chars)",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "viewport meta present",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "Open Graph title and description present",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "favicon defined",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "exactly one <h1>",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "hero shows title, fee-free tagline and program director",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "stats show 30 days / 5 modules / 30 labs / 1 capstone",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "every in-page link (#…) points to an existing element",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "external links open in a new tab with rel=\"noopener\"",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "mailto links are well formed",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "fee shown as INR 1,00,000",
+   "ok": true
+  },
+  {
+   "group": "1. Page load, SEO and structure",
+   "name": "footer shows current year",
+   "ok": true
+  },
+  {
+   "group": "2. Header and navigation",
+   "name": "mobile: menu hidden until burger is tapped",
+   "ok": true
+  },
+  {
+   "group": "2. Header and navigation",
+   "name": "mobile: tapping a menu link closes the menu",
+   "ok": true
+  },
+  {
+   "group": "2. Header and navigation",
+   "name": "desktop: all 7 nav items visible",
+   "ok": true
+  },
+  {
+   "group": "2. Header and navigation",
+   "name": "header stays visible (sticky) after scrolling",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "30 day buttons, coloured by 5 modules",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "starts at Day 1 with progress 1/30",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "Previous at Day 1 stays on Day 1",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "Next moves to Day 2, then Day 3",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "clicking Day 15 shows Day 15 and 50% progress",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "day card shows topic, lab and module goal from the syllabus",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "day types: D1 concept, D5 project, D6 assessment, D27 capstone",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "\"Up next\" link jumps to the following day",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "Next at Day 30 stays on Day 30 and shows completion",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "keyboard: Arrow keys change day when explorer is focused",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "selected day is marked aria-selected and earlier days \"done\"",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "module card click jumps explorer to module start (Module 3 → Day 13)",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "Play advances one day every 4 s and shows Pause",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "Pause stops auto-advance",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "auto-play stops by itself at Day 30",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "manual navigation during play stops play",
+   "ok": true
+  },
+  {
+   "group": "3. Dynamic day explorer",
+   "name": "mobile: swipe left/right on the day card changes day",
+   "ok": true
+  },
+  {
+   "group": "4. Full syllabus accordion",
+   "name": "5 modules × 6 days, numbered Day 1 … Day 30 in order",
+   "ok": true
+  },
+  {
+   "group": "4. Full syllabus accordion",
+   "name": "module titles match the brochure",
+   "ok": true
+  },
+  {
+   "group": "4. Full syllabus accordion",
+   "name": "Expand all opens 5, Collapse all closes all",
+   "ok": true
+  },
+  {
+   "group": "4. Full syllabus accordion",
+   "name": "clicking a module heading toggles it",
+   "ok": true
+  },
+  {
+   "group": "4. Full syllabus accordion",
+   "name": "print: all modules open and interactive parts hidden",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "5 role buttons",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "each role shows its title, modules, skills and 3 salary bars",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "salary bands rise with experience for every role",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "salary bars stay inside their track",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "4 employer tiers and 8 sectors",
+   "ok": true
+  },
+  {
+   "group": "5. Careers, sectors and salaries",
+   "name": "salary note: sources linked and no job / salary guarantee stated",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "form markup: POST to FormSubmit for cto@algoprofessor.com (works without JS too)",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "hidden settings: subject, table template, honeypot",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "every visible field has a label",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "empty submit: 5 errors, nothing sent, focus on first bad field",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "name shorter than 2 characters is rejected",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid email rejected: \"asha\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid email rejected: \"asha@\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid email rejected: \"asha@example\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid email rejected: \"asha@example.c\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid email rejected: \"asha rao@example.com\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid phone rejected: \"12345\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid phone rejected: \"98765-432\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "invalid phone rejected: \"+91 98765 43210 999\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "role must be chosen",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "consent must be ticked",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "error clears as soon as the user corrects the field",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "valid Indian mobile format accepted: \"9876543210\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "valid Indian mobile format accepted: \"+91 98765 43210\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "valid Indian mobile format accepted: \"+91-98765-43210\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "valid Indian mobile format accepted: \"(+91) 98765 43210\"",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "valid submission POSTs JSON to https://formsubmit.co/ajax/cto@algoprofessor.com",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "success: thank-you message shown and form cleared",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "double-click sends only one enquiry (button disabled while sending)",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "failure fallback on server error (HTTP 500): mailto cto@algoprofessor.com with details prefilled",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "failure fallback on FormSubmit \"success:false\" (e.g. not yet activated): mailto cto@algoprofessor.com with details prefilled",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "failure fallback on network failure / offline: mailto cto@algoprofessor.com with details prefilled",
+   "ok": true
+  },
+  {
+   "group": "6. Contact form (recipient cto@algoprofessor.com)",
+   "name": "no JavaScript errors during all form tests",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 320px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 360px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 390px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 414px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 768px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 1024px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 1280px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 1366px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "7. Responsive layout (no sideways scrolling)",
+   "name": "width 1920px: no horizontal overflow, header and hero visible",
+   "ok": true
+  },
+  {
+   "group": "8. Robustness and accessibility",
+   "name": "JavaScript disabled: all content still visible and form still posts",
+   "ok": true
+  },
+  {
+   "group": "8. Robustness and accessibility",
+   "name": "reduced motion: content shown without animation",
+   "ok": true
+  },
+  {
+   "group": "8. Robustness and accessibility",
+   "name": "axe-core: no serious or critical accessibility violations",
+   "ok": true
+  },
+  {
+   "group": "8. Robustness and accessibility",
+   "name": "all buttons have an accessible name",
+   "ok": true
+  },
+  {
+   "group": "8. Robustness and accessibility",
+   "name": "custom 404 page renders for a missing URL",
+   "ok": true
+  }
+ ]
+}
