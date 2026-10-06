@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurons to Mixture of Experts | 30-Day Deep Learning Mastery Bootcamp | AlgoProfessor</title>
+<meta name="description" content="AlgoProfessor 30-day industry program: ANN, CNN, RNN, LSTM, Transformer and MoE with real-time industry and UN SDG capstone projects. 5 modules, 30 hands-on labs.">
+<meta property="og:title" content="Neurons to Mixture of Experts: Deep Learning Mastery Bootcamp">
+<meta property="og:description" content="30 days • 5 modules • 30 hands-on labs • 1 SDG capstone. Program Director: Dr S Satyanarayana.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d1f3c'/><text x='16' y='21.5' font-size='14' text-anchor='middle' fill='%23c9a227' font-family='Arial' font-weight='700'>AP</text></svg>">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1f3c; --navy2:#1b3563; --gold:#c9a227; --gold2:#f0d47a; --goldbg:#fbf6e7;
+  --ink:#1f2937; --muted:#64748b; --line:#e7e2d3; --bg:#ffffff; --soft:#f7f8fb;
+  --r:14px; --shadow:0 10px 30px rgba(13,31,60,.08);
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+a{color:var(--navy2)}
+.wrap{width:min(1140px,100% - 32px);margin-inline:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:.85em 1.5em;border-radius:999px;font:700 .98rem var(--font);
+  text-decoration:none;border:2px solid transparent;cursor:pointer;transition:transform .15s,background .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-gold{background:var(--gold);color:var(--navy);box-shadow:0 8px 20px rgba(201,162,39,.35)}
+.btn-gold:hover{background:var(--gold2)}
+.btn-line{border-color:rgba(255,255,255,.45);color:#fff}
+.btn-line:hover{border-color:var(--gold);color:var(--gold)}
+.btn-navy{background:var(--navy);color:#fff}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold)}
+h1,h2,h3{line-height:1.2;margin:0}
+.sec{padding:84px 0}
+.sec.soft{background:var(--soft)}
+.sec-head{text-align:center;max-width:720px;margin:0 auto 46px}
+.sec-head h2{font-size:clamp(1.7rem,3.2vw,2.4rem);color:var(--navy);margin:8px 0 12px}
+.sec-head p{color:var(--muted);margin:0;font-size:1.05rem}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo i{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--navy);color:var(--gold);font:800 .9rem var(--font);font-style:normal}
+.logo b{color:var(--navy);letter-spacing:.03em}
+.logo span{color:var(--gold);font-weight:600;font-size:.9rem}
+nav{display:flex;align-items:center;gap:26px}
+nav a{text-decoration:none;color:var(--ink);font-weight:600;font-size:.94rem}
+nav a:hover{color:var(--gold)}
+nav .btn{padding:.6em 1.2em;color:var(--navy)}
+.burger{display:none;background:none;border:0;font-size:1.7rem;color:var(--navy);cursor:pointer}
+
+/* hero */
+.hero{background:linear-gradient(135deg,#0b1a33 0%,#13284d 55%,#1d3a6e 100%);color:#fff;position:relative;overflow:hidden;padding:84px 0 70px}
+.hero::after{content:"";position:absolute;right:-160px;top:-160px;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:800;margin:14px 0 16px;max-width:900px}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .sub{font-size:clamp(1.05rem,2vw,1.25rem);color:#d5ddec;max-width:760px;margin:0 0 18px}
+.hero .dir{color:#b8c4da;margin:0 0 30px}
+.hero .dir b{color:#fff}
+.cta{display:flex;flex-wrap:wrap;gap:14px}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.pills span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:.35em .9em;border-radius:999px;font-size:.88rem;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:52px}
+.stat{background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.35);border-radius:var(--r);padding:20px;text-align:center}
+.stat b{display:block;font-size:2.4rem;color:var(--gold);line-height:1}
+.stat span{color:#c9d3e6;font-size:.92rem}
+
+/* modules */
+.modules{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;counter-reset:m}
+.mod{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px 20px;box-shadow:var(--shadow);position:relative;
+  transition:transform .2s,box-shadow .2s;cursor:pointer}
+.mod:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(13,31,60,.12)}
+.mod .num{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--navy);color:var(--gold);font-weight:800;margin-bottom:14px}
+.mod small{color:var(--gold);font-weight:700;font-size:.8rem}
+.mod h3{font-size:1.08rem;color:var(--navy);margin:4px 0 0}
+.mod:not(:last-child)::after{content:"→";position:absolute;right:-15px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;font-size:1.2rem}
+
+/* syllabus */
+.acc{max-width:980px;margin:0 auto}
+.acc details{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden}
+.acc summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;align-items:center;gap:16px}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary .num{flex:none;width:42px;height:42px;border-radius:11px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-weight:800}
+.acc summary h3{font-size:1.12rem;color:var(--navy)}
+.acc summary small{display:block;color:var(--gold);font-weight:700;font-size:.8rem}
+.acc summary .chev{margin-left:auto;font-size:1.3rem;color:var(--gold);transition:transform .2s}
+.acc details[open] .chev{transform:rotate(45deg)}
+.days{border-top:1px solid var(--line)}
+.day{display:grid;grid-template-columns:72px 1fr 1.25fr;gap:16px;padding:14px 24px;border-bottom:1px solid #f1ede1;align-items:start}
+.day:last-child{border-bottom:0}
+.day:nth-child(even){background:#fdfbf4}
+.day .d{font-weight:800;color:var(--gold);font-size:.9rem}
+.day .t{font-weight:700;color:var(--navy)}
+.day .l{color:#475569;font-size:.95rem}
+.day .l b{color:var(--ink);font-weight:600}
+.acc-tools{display:flex;justify-content:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.acc-tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.5em 1.1em;font:600 .9rem var(--font);color:var(--navy);cursor:pointer}
+.acc-tools button:hover{border-color:var(--gold)}
+code{background:var(--goldbg);border-radius:5px;padding:0 .3em;font-size:.88em}
+
+/* three cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card h3{background:var(--navy);color:#fff;padding:16px 22px;font-size:1.15rem;border-left:7px solid var(--gold)}
+.card ul{list-style:none;margin:0;padding:20px 22px 8px}
+.card li{position:relative;padding-left:28px;margin-bottom:12px}
+.card li::before{content:"";position:absolute;left:0;top:.45em;width:16px;height:16px;border-radius:50%;
+  background:var(--goldbg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%23c9a227' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center/12px no-repeat;border:1px solid var(--gold)}
+.prereq{margin:4px 22px 22px;padding:14px 16px;background:var(--goldbg);border-radius:10px;font-size:.95rem}
+
+/* fee + contact */
+.contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:0;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(13,31,60,.15);border:2px solid var(--gold)}
+.fee{background:linear-gradient(160deg,#0b1a33,#1b3563);color:#fff;padding:44px 38px;display:flex;flex-direction:column}
+.fee .price{font-size:clamp(2.4rem,5vw,3.4rem);font-weight:800;margin:6px 0 2px;line-height:1.1}
+.fee .per{color:#c9d3e6;margin:0 0 24px;font-size:.92rem}
+.fee ul{padding:0;margin:0 0 26px;list-style:none}
+.fee li{padding:9px 0;border-bottom:1px solid rgba(255,255,255,.12);display:flex;gap:10px}
+.fee li::before{content:"✓";color:var(--gold);font-weight:800}
+.reach{margin-top:auto;background:rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;font-size:.95rem}
+.reach a{color:var(--gold2);text-decoration:none;font-weight:600}
+.reach p{margin:4px 0}
+.formbox{background:#fff;padding:40px 38px}
+.formbox h2{color:var(--navy);font-size:1.7rem;margin-bottom:6px}
+.formbox > p{color:var(--muted);margin:0 0 22px}
+form{display:grid;gap:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:.88rem;color:var(--navy)}
+.field label i{color:#c0392b;font-style:normal}
+.field input,.field select,.field textarea{font:inherit;padding:.75em .9em;border:1.5px solid #d9d4c3;border-radius:10px;background:#fff;color:var(--ink);width:100%;transition:border .15s,box-shadow .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,162,39,.18)}
+.field.bad input,.field.bad select{border-color:#c0392b}
+.err{color:#c0392b;font-size:.8rem;min-height:1em}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:#475569}
+.consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--gold)}
+.hp{position:absolute;left:-9999px}
+.submit{justify-self:start;min-width:200px;justify-content:center}
+.submit[disabled]{opacity:.65;cursor:wait;transform:none}
+.status{border-radius:10px;padding:14px 16px;font-size:.95rem;display:none}
+.status.ok{display:block;background:#e8f6ee;color:#1e6b3a;border:1px solid #b6e0c4}
+.status.fail{display:block;background:#fdecea;color:#8a1f17;border:1px solid #f5c2bd}
+
+/* faq */
+.faq{max-width:860px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--line);padding:4px 0}
+.faq summary{cursor:pointer;list-style:none;padding:16px 36px 16px 0;font-weight:700;color:var(--navy);position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:12px;font-size:1.5rem;color:var(--gold)}
+.faq details[open] summary::after{content:"−"}
+.faq p{margin:0 0 18px;color:#475569}
+
+/* footer */
+footer{background:var(--navy);color:#c9d3e6;padding:50px 0 24px;border-top:5px solid var(--gold)}
+.frow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+footer b{color:#fff}
+footer a{color:var(--gold2);text-decoration:none}
+.fbot{border-top:1px solid #253f6b;margin-top:28px;padding-top:16px;font-size:.86rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.float{position:fixed;right:18px;bottom:18px;z-index:40}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.js .rv.in{opacity:1;transform:none}
+
+@media (max-width:1000px){
+  .modules{grid-template-columns:repeat(2,1fr)}
+  .mod::after{display:none}
+  .cards{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:820px){
+  .burger{display:block}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:0;padding:8px 16px 18px;border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  nav.open{display:flex}
+  nav a{padding:12px 4px;border-bottom:1px solid #f1ede1}
+  nav .btn{margin-top:10px;justify-content:center;border-bottom:0}
+}
+@media (max-width:640px){
+  .sec{padding:60px 0}
+  .modules,.cards,.two{grid-template-columns:1fr}
+  .mod{display:grid;grid-template-columns:44px 1fr;column-gap:14px;align-items:center;padding:16px 18px}
+  .mod .num{grid-row:span 2;margin:0}
+  .day{grid-template-columns:1fr;gap:4px;padding:14px 18px}
+  .acc summary{padding:16px 18px}
+  .fee,.formbox{padding:28px 22px}
+  .logo span{display:none}
+  .hero{padding:60px 0 50px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+@media print{
+  header,.float,.cta,#contact,#faq,footer .fbot{display:none!important}
+  .hero{background:#0d1f3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:24px 0}
+  .acc details{break-inside:avoid;box-shadow:none}
+  .rv{opacity:1;transform:none}
+  .sec{padding:24px 0}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hrow">
+    <a class="logo" href="#top"><i>AP</i><div><b>ALGOPROFESSOR</b> <span>AI R&amp;D Solutions</span></div></a>
+    <button class="burger" aria-label="Menu" aria-expanded="false">☰</button>
+    <nav>
+      <a href="#modules">Modules</a>
+      <a href="#syllabus">Syllabus</a>
+      <a href="#benefits">Outcomes</a>
+      <a href="#contact">Fee</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-gold" href="#contact">Apply / Enquire</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <span class="tag">Part E &bull; AlgoProfessor 30-Day Industry Program</span>
+    <h1>Neurons to Mixture of Experts: <em>Deep Learning Mastery Bootcamp</em></h1>
+    <p class="sub">ANN &bull; CNN &bull; RNN &bull; LSTM &bull; Transformer &bull; MoE &mdash; with real-time industry and UN SDG capstone projects</p>
+    <p class="dir"><b>Program Director:</b> Dr S Satyanarayana, CEO &amp; Chief Agentic AI Scientist, AlgoProfessor AI R&amp;D Solutions</p>
+    <div class="cta">
+      <a class="btn btn-gold" href="#contact">Apply / Enquire now</a>
+      <a class="btn btn-line" href="#syllabus">View 30-day syllabus</a>
+    </div>
+    <div class="pills"><span>ANN</span><span>CNN</span><span>RNN</span><span>LSTM</span><span>Transformer</span><span>MoE</span><span>MLOps</span><span>UN SDG capstone</span></div>
+    <div class="stats">
+      <div class="stat"><b>30</b><span>days</span></div>
+      <div class="stat"><b>5</b><span>modules</span></div>
+      <div class="stat"><b>30</b><span>hands-on labs</span></div>
+      <div class="stat"><b>1</b><span>SDG capstone</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="modules">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="tag">Program structure</span><h2>Five modules, thirty days</h2>
+      <p>Every day combines a concept session with a hands-on lab, building from a single neuron to sparse Mixture-of-Experts models and a deployed real-time system.</p></div>
+    <div class="modules" id="mods"></div>
+  </div>
+</section>
+
+<section class="sec soft" id="syllabus">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="tag">Day-by-day syllabus</span><h2>What you will learn and build each day</h2>
+      <p>Open a module to see its six days: the topic, and the hands-on lab you complete.</p></div>
+    <div class="acc-tools"><button type="button" id="openAll">Expand all</button><button type="button" id="closeAll">Collapse all</button><button type="button" onclick="window.print()">Print / save syllabus as PDF</button></div>
+    <div class="acc" id="acc"></div>
+  </div>
+</section>
+
+<section class="sec" id="benefits">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="tag">Is this for you?</span><h2>Who attends, what you gain, what you receive</h2></div>
+    <div class="cards">
+      <div class="card rv"><h3>Who should attend</h3><ul>
+        <li>B.Tech / M.Tech / MCA students and final-year project teams</li>
+        <li>Faculty members and Ph.D. scholars in AI, CSE and data science</li>
+        <li>Software engineers moving into AI / ML roles</li>
+        <li>Industry R&amp;D teams building real-time AI systems</li>
+        <li>Startup founders working on SDG-impact products</li></ul></div>
+      <div class="card rv"><h3>Learning outcomes</h3><ul>
+        <li>Derive and explain the mathematics of all six architectures</li>
+        <li>Implement each one in PyTorch from first principles</li>
+        <li>Choose the right model for tabular, image, sequence and text data</li>
+        <li>Fine-tune pre-trained Transformers, LLMs and MoE models</li>
+        <li>Deploy and monitor a real-time AI system with MLOps tools</li>
+        <li>Deliver an SDG-aligned capstone ready for publication or a pilot</li></ul></div>
+      <div class="card rv"><h3>What you receive</h3><ul>
+        <li>The complete reference handbook (Parts A–E)</li>
+        <li>Six tested PyTorch programs with sample outputs</li>
+        <li>60 project briefs with solution hints</li>
+        <li>17 SDG industry blueprints and the production-stack guide</li>
+        <li>Personal capstone review by the program director</li></ul>
+        <p class="prereq"><b>Prerequisites:</b> basic Python and school-level linear algebra, calculus and probability.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec soft" id="contact">
+  <div class="wrap">
+    <div class="contact-grid rv">
+      <div class="fee">
+        <span class="tag">Program fee</span>
+        <div class="price">INR 1,00,000</div>
+        <p class="per">per participant &bull; 30-day program</p>
+        <ul>
+          <li>5 modules, 30 concept sessions and 30 hands-on labs</li>
+          <li>Complete handbook, six PyTorch programs, 60 project briefs</li>
+          <li>17 SDG blueprints and production-stack guide</li>
+          <li>SDG capstone with personal review by the program director</li>
+        </ul>
+        <div class="reach">
+          <p><b>AlgoProfessor AI R&amp;D Solutions</b></p>
+          <p>Email: <a href="mailto:ceo@algoprofessor.com">ceo@algoprofessor.com</a></p>
+          <p>Web: <a href="https://www.algoprofessor.com" target="_blank" rel="noopener">www.algoprofessor.com</a></p>
+          <p style="color:var(--gold2);font-weight:700;margin-top:10px">Learn it. Build it. Deploy it for impact.</p>
+        </div>
+      </div>
+      <div class="formbox">
+        <h2>Enrol / enquire</h2>
+        <p>Fill in the form and the program team will reply by email with cohort dates and enrolment details.</p>
+        <form id="enquiry" action="https://formsubmit.co/ceo@algoprofessor.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="New enquiry: Neurons to MoE 30-Day Bootcamp">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="two">
+            <div class="field"><label for="f-name">Full name <i>*</i></label><input id="f-name" name="Name" required autocomplete="name"><span class="err"></span></div>
+            <div class="field"><label for="f-email">Email <i>*</i></label><input id="f-email" name="Email" type="email" required autocomplete="email"><span class="err"></span></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="f-phone">Mobile / WhatsApp <i>*</i></label><input id="f-phone" name="Phone" type="tel" required autocomplete="tel" placeholder="+91 98765 43210"><span class="err"></span></div>
+            <div class="field"><label for="f-org">College / organisation</label><input id="f-org" name="Organisation" autocomplete="organization"><span class="err"></span></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="f-role">I am a <i>*</i></label>
+              <select id="f-role" name="Role" required>
+                <option value="">Select…</option>
+                <option>B.Tech / M.Tech / MCA student</option>
+                <option>Faculty member / Ph.D. scholar</option>
+                <option>Software engineer</option>
+                <option>Industry R&amp;D team</option>
+                <option>Startup founder</option>
+                <option>Other</option>
+              </select><span class="err"></span></div>
+            <div class="field"><label for="f-count">Number of participants</label>
+              <select id="f-count" name="Participants"><option>1 (individual)</option><option>2–5</option><option>6–20</option><option>More than 20 (institution / company)</option></select><span class="err"></span></div>
+          </div>
+          <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="Message" rows="4" placeholder="Questions about cohort dates, group enrolment, capstone ideas…"></textarea></div>
+          <label class="consent"><input type="checkbox" id="f-consent" name="Consent" value="Yes" required> <span>I agree that AlgoProfessor may contact me by email or phone about this program. My details are used only to respond to this enquiry.</span></label>
+          <span class="err" id="consent-err"></span>
+          <button class="btn btn-gold submit" type="submit">Send enquiry</button>
+          <div class="status" id="status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="tag">FAQ</span><h2>Frequently asked questions</h2></div>
+    <div class="faq">
+      <details><summary>What do I need to know before joining?</summary><p>Basic Python and school-level linear algebra, calculus and probability. Day 1 sets up the complete tool stack, so no prior deep-learning experience is required.</p></details>
+      <details><summary>How is each day organised?</summary><p>Each day has a concept session followed by a hands-on lab with a concrete outcome, for example training <code>cnn.py</code> on MNIST or building a RAG chatbot with LoRA fine-tuning.</p></details>
+      <details><summary>What is the SDG capstone?</summary><p>In Days 27–30 you choose a UN Sustainable Development Goal project, define a measurable KPI, build the data pipeline and a baseline, train a hybrid CNN / LSTM / Transformer / MoE system, deploy it as a Streamlit app or API, and present it on demo day for expert review.</p></details>
+      <details><summary>What does the fee include?</summary><p>INR 1,00,000 per participant covers the 30-day program, the complete reference handbook (Parts A–E), six tested PyTorch programs, 60 project briefs with solution hints, 17 SDG industry blueprints with the production-stack guide, and a personal capstone review by the program director.</p></details>
+      <details><summary>When does the next cohort start?</summary><p>Send an enquiry using the form above, or email <a href="mailto:ceo@algoprofessor.com">ceo@algoprofessor.com</a>, for upcoming dates and group enrolment.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="frow">
+      <div><p style="margin:0 0 6px"><b>ALGOPROFESSOR</b> <span style="color:var(--gold)">AI R&amp;D Solutions</span></p>
+        <p style="margin:0">Dr S Satyanarayana &bull; CEO &amp; Chief Agentic AI Scientist</p></div>
+      <div><p style="margin:0 0 6px"><a href="mailto:ceo@algoprofessor.com">ceo@algoprofessor.com</a></p>
+        <p style="margin:0"><a href="https://www.algoprofessor.com" target="_blank" rel="noopener">www.algoprofessor.com</a></p></div>
+    </div>
+    <div class="fbot"><span>Neurons to Mixture of Experts Bootcamp &bull; 30 days &bull; Fee INR 1,00,000</span><span>&copy; <span id="yr"></span> AlgoProfessor AI R&amp;D Solutions</span></div>
+  </div>
+</footer>
+
+<a class="btn btn-gold float" href="#contact">Apply →</a>
+
+<script>
+const MODULES = [
+  { n: 1, days: '1–6', title: 'Foundations & ANN', items: [
+    ['Environment setup, tensors, autograd, GPU vs CPU', 'Install the tool stack; first tensors and gradients in PyTorch'],
+    ['Neuron, activations, loss functions, backpropagation', 'Compute one neuron and one backprop step by hand, then check in code'],
+    ['Multi-layer perceptron end to end', 'Build and train ann_mlp.py; input → output demo'],
+    ['Regularisation, optimisers, the proper way', 'Dropout, weight decay, AdamW, schedulers; apply a 14-point checklist'],
+    ['ANN project lab', 'Credit-card fraud or diabetes risk with PR-AUC and SHAP'],
+    ['Module 1 assessment', 'Quiz + mini-project demo and code review']]},
+  { n: 2, days: '7–12', title: 'CNN & Computer Vision', items: [
+    ['Convolution mathematics', 'Output-size, parameter and MAC calculations; receptive field'],
+    ['Building a CNN', 'Train cnn.py on MNIST; inspect feature maps'],
+    ['Transfer learning', 'Fine-tune ResNet / EfficientNet (timm) on a medical or agri dataset'],
+    ['Detection and segmentation', 'YOLOv8 object detection and U-Net segmentation'],
+    ['Explainability and edge deployment', 'Grad-CAM; export to ONNX / TFLite; measure FPS'],
+    ['CNN project lab', 'Diabetic-retinopathy grading or leaf-disease mobile app']]},
+  { n: 3, days: '13–18', title: 'RNN, LSTM & Time Series', items: [
+    ['Recurrent networks and BPTT', 'Vanishing-gradient experiment (0.9⁵⁰ vs 0.99⁵⁰)'],
+    ['RNN lab', 'Train rnn.py; compare with a naive baseline'],
+    ['LSTM gates and memory', 'Trace one LSTM cell by hand; train lstm.py'],
+    ['Time-series forecasting practice', 'Walk-forward validation, scaling without leakage, multi-step forecasts'],
+    ['Seq2seq and attention', 'Encoder–decoder LSTM with Bahdanau attention'],
+    ['Sequence project lab', 'Electricity-load forecasting or log anomaly detection']]},
+  { n: 4, days: '19–24', title: 'Transformers, LLMs & MoE', items: [
+    ['Self-attention and the Transformer', 'Implement attention from equations; train transformer.py'],
+    ['Pre-trained Transformers', 'Fine-tune BERT with Hugging Face Trainer'],
+    ['Vision, speech and multimodal Transformers', 'ViT for X-rays, Whisper for Indian-language speech'],
+    ['LLMs, RAG and parameter-efficient fine-tuning', 'Build a RAG chatbot; LoRA / QLoRA with PEFT'],
+    ['Mixture of Experts', 'Router, top-k dispatch, balancing loss; train moe.py'],
+    ['Serving large MoE models', 'Mixtral / DeepSeek-MoE with vLLM; tokens/s and memory study']]},
+  { n: 5, days: '25–30', title: 'MLOps & SDG Capstone', items: [
+    ['Real-time MLOps stack', 'Kafka/MQTT ingestion, MLflow tracking, FastAPI / Triton serving'],
+    ['Responsible and trustworthy AI', 'SHAP, Fairlearn, differential privacy, federated learning; DPDP Act 2023'],
+    ['SDG capstone: kick-off', 'Choose an SDG project, define the KPI, build the data pipeline and baseline'],
+    ['SDG capstone: modelling', 'Train the hybrid CNN / LSTM / Transformer / MoE system'],
+    ['SDG capstone: deployment', 'Deploy as a Streamlit app or API; measure the target KPI'],
+    ['Demo day and roadmap', 'Capstone presentation, expert review, publication / patent / career roadmap']]},
+];
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const fmt = s => esc(s).replace(/\b(\w+\.py|Trainer|timm)\b/g, '<code>$1</code>');
+
+document.getElementById('mods').innerHTML = MODULES.map(m =>
+  `<a class="mod rv" href="#m${m.n}" data-m="${m.n}" style="text-decoration:none"><div class="num">${m.n}</div><small>Module ${m.n} &bull; Days ${m.days}</small><h3>${esc(m.title)}</h3></a>`).join('');
+
+document.getElementById('acc').innerHTML = MODULES.map((m, i) => {
+  const first = (m.n - 1) * 6 + 1;
+  return `<details id="m${m.n}" ${i === 0 ? 'open' : ''}><summary><span class="num">${m.n}</span><div><small>Module ${m.n} &bull; Days ${m.days}</small><h3>${esc(m.title)}</h3></div><span class="chev">+</span></summary>
+    <div class="days">${m.items.map(([t, l], k) => `<div class="day"><span class="d">Day ${first + k}</span><span class="t">${esc(t)}</span><span class="l"><b>Lab:</b> ${fmt(l)}</span></div>`).join('')}</div></details>`;
+}).join('');
+
+document.getElementById('mods').addEventListener('click', e => {
+  const a = e.target.closest('.mod'); if (!a) return;
+  document.getElementById('m' + a.dataset.m).open = true;
+});
+document.getElementById('openAll').onclick = () => document.querySelectorAll('#acc details').forEach(d => d.open = true);
+document.getElementById('closeAll').onclick = () => document.querySelectorAll('#acc details').forEach(d => d.open = false);
+window.addEventListener('beforeprint', () => document.querySelectorAll('#acc details').forEach(d => d.open = true));
+
+// mobile nav
+const nav = document.querySelector('nav'), burger = document.querySelector('.burger');
+burger.onclick = () => burger.setAttribute('aria-expanded', nav.classList.toggle('open'));
+nav.addEventListener('click', e => { if (e.target.tagName === 'A') nav.classList.remove('open'); });
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// reveal on scroll
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: .12 }) : null;
+document.querySelectorAll('.rv').forEach(el => io ? io.observe(el) : el.classList.add('in'));
+
+// contact form: validate, then send through FormSubmit (emails ceo@algoprofessor.com)
+const form = document.getElementById('enquiry'), statusBox = document.getElementById('status');
+function setErr(input, msg) {
+  const f = input.closest('.field'); if (!f) return;
+  f.classList.toggle('bad', !!msg); f.querySelector('.err').textContent = msg || '';
+}
+function validate() {
+  let ok = true;
+  const name = form.Name, email = form.Email, phone = form.Phone, role = form.Role, consent = document.getElementById('f-consent');
+  setErr(name, name.value.trim().length < 2 ? 'Please enter your name.' : ''); ok = ok && name.value.trim().length >= 2;
+  const eok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
+  setErr(email, eok ? '' : 'Please enter a valid email address.'); ok = ok && eok;
+  const digits = phone.value.replace(/\D/g, '');
+  const pok = digits.length >= 10 && digits.length <= 13;
+  setErr(phone, pok ? '' : 'Please enter a valid mobile number.'); ok = ok && pok;
+  setErr(role, role.value ? '' : 'Please choose one.'); ok = ok && !!role.value;
+  document.getElementById('consent-err').textContent = consent.checked ? '' : 'Please tick the consent box so we can reply.';
+  return ok && consent.checked;
+}
+form.addEventListener('input', e => { if (e.target.closest('.field.bad')) setErr(e.target, ''); });
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  statusBox.className = 'status';
+  if (!validate()) { const bad = form.querySelector('.bad input, .bad select'); if (bad) bad.focus(); return; }
+  const btn = form.querySelector('.submit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('https://formsubmit.co/ajax/ceo@algoprofessor.com', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || String(out.success) === 'false') throw new Error(out.message || 'Request failed');
+    statusBox.className = 'status ok';
+    statusBox.textContent = 'Thank you! Your enquiry has been sent. The program team will reply by email shortly.';
+    form.reset();
+  } catch (err) {
+    const body = [...new FormData(form)].filter(([k]) => !k.startsWith('_')).map(([k, v]) => `${k}: ${v}`).join('\n');
+    statusBox.className = 'status fail';
+    statusBox.innerHTML = 'Sorry, the form could not be sent right now. Please <a href="mailto:ceo@algoprofessor.com?subject=' +
+      encodeURIComponent('Enquiry: Neurons to MoE 30-Day Bootcamp') + '&body=' + encodeURIComponent(body) +
+      '">send it by email instead</a> (your details are filled in), or write to ceo@algoprofessor.com.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send enquiry';
+  }
+});
+</script>
+</body>
+</html>
