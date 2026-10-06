@@ -1,0 +1,63 @@
+NEURONS TO MIXTURE OF EXPERTS BOOTCAMP - HOW TO PUT THE WEBSITE LIVE
+====================================================================
+
+The ZIP contains a finished static website. No database, no PHP, no build step.
+
+Files (upload ALL of them, keeping the "assets" folder):
+  index.html        the course page (home page)
+  styles.css        design
+  data.js           course content (edit this to change days, labs, tools)
+  app.js            interactive parts
+  404.html          "page not found" page
+  robots.txt        lets search engines index the site
+  .htaccess         Apache settings (cPanel / Hostinger / GoDaddy); hidden file
+  assets/neurons-to-moe-bootcamp-brochure.pdf   brochure download
+
+--------------------------------------------------------------------
+OPTION A - cPanel / Hostinger / GoDaddy (e.g. bootcamp.algoprofessor.com)
+--------------------------------------------------------------------
+1. Log in to your hosting control panel.
+2. (Optional) Domains -> Subdomains -> create "bootcamp" for algoprofessor.com.
+   Note the folder it creates, e.g. public_html/bootcamp
+   (use public_html itself if the site should be the main domain).
+3. File Manager -> open that folder -> Upload -> choose the ZIP.
+4. Right-click the ZIP -> Extract. index.html must sit directly in that folder,
+   not inside another sub-folder.
+5. Settings -> "Show hidden files" to confirm .htaccess was extracted.
+6. SSL/TLS -> enable the free SSL (AutoSSL / Let's Encrypt) for the domain.
+   Then open .htaccess and remove the "#" from the three HTTPS lines.
+7. Visit https://bootcamp.algoprofessor.com - done.
+
+--------------------------------------------------------------------
+OPTION B - Netlify (free, about 2 minutes)
+--------------------------------------------------------------------
+1. Go to https://app.netlify.com/drop
+2. Unzip the file on your computer and drag the unzipped folder onto the page.
+3. The site is live at a netlify.app address immediately.
+4. Site settings -> Domain management -> add bootcamp.algoprofessor.com and
+   follow the DNS instructions (one CNAME record at your domain provider).
+
+--------------------------------------------------------------------
+OPTION C - GitHub Pages (free)
+--------------------------------------------------------------------
+1. Create a public repository, upload all files (index.html at the top level).
+2. Settings -> Pages -> Source: "Deploy from a branch", branch "main", folder "/".
+3. Live at https://<username>.github.io/<repository>/ within a minute.
+4. Custom domain: Settings -> Pages -> Custom domain -> bootcamp.algoprofessor.com,
+   then add the CNAME record it shows at your domain provider.
+
+--------------------------------------------------------------------
+SIMPLEST POSSIBLE (one file)
+--------------------------------------------------------------------
+index-single-file.html contains the whole page (design + scripts) in one file.
+Rename it to index.html and upload it together with the "assets" folder
+(the brochure link needs assets/neurons-to-moe-bootcamp-brochure.pdf).
+
+--------------------------------------------------------------------
+AFTER GOING LIVE - please check
+--------------------------------------------------------------------
+- Click "Download brochure" and the "Send enquiry" button (it opens the
+  visitor's email app addressed to ceo@algoprofessor.com).
+- Add cohort dates / online or on-site mode to the FAQ in index.html when fixed.
+- To receive enquiries without email apps, connect the form to Formspree,
+  Google Forms or Netlify Forms (see README.md).
