@@ -2,6 +2,7 @@
 
 | File | Purpose |
 |------|---------|
+| `nitsci_paper_combined.tex` / `.pdf` | **Complete paper in one file**: all sections inline, continuous layout, bibliography embedded; compiles with `pdflatex` alone (needs only `figures/`). Regenerate with `python make_combined.py` |
 | `nitsci_paper.tex` / `.pdf` | Full manuscript (title, abstract, declarations; inputs the section files) |
 | `sections/01_introduction.tex` … `08_conclusion.tex` | One file per section, each about 2 pages (Method and Results about 2.5–3, because of the architecture diagram and the results tables) |
 | `sections/09_supplementary.tex` | Supplementary figures (grade histograms, training curves) |
@@ -37,6 +38,8 @@ Numbers that were measured directly from the code (CPU, random weights):
 3. Copy all `results_*.json` files and `figures/` here, then build:
    ```
    ./make_section_pdfs.sh        # fills results, builds the paper and section_pdfs/
+   python make_combined.py       # single-file version: nitsci_paper_combined.tex
+   pdflatex nitsci_paper_combined && pdflatex nitsci_paper_combined
    ```
    For journal submission, set `\sectionsonnewpagesfalse` in `nitsci_paper.tex` so that
    sections no longer start on new pages.
